@@ -47,8 +47,13 @@ class Frame(object):
             return F_transformation
         elif isinstance(other, Point3d): # F_self * p_other
             return Point3d(self.name, (self.R.dot(other.coords) + self.p.coords))
-        else:
-            raise TypeError('Cannot multiply Frame by non-Point object')
+        else: # check for array of coordinates
+            try:
+                out = np.empty(other.shape)
+                for i in range(3): # loop through rows (x,y,z)
+                    out[i,:] = self.R.dot(other[i]) + self.p.coords
+            except:
+                raise TypeError('Cannot multiply Frame by non-Point object')
     
     def __findFrame__(self,point,path,visited):
         '''
