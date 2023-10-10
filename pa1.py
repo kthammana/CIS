@@ -53,7 +53,7 @@ class Point3d(object):
         self.frame = frame
 
     def copy(self):
-        return Point3d(self.coords)
+        return Point3d(self.frame, self.coords)
 
 
     def __getattr__(self, name):

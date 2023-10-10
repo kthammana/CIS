@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 # I took this code off this Github and added a frame variable
 
 class Point3d(object):
-    def __init__(self, frame, x=0, y=0, z=0):
+    def __init__(self, x=0, y=0, z=0):
         if type(x) == list:
             # if receives a list
             try:
@@ -49,10 +49,9 @@ class Point3d(object):
             self.coords = np.array([x,y,z], dtype=np.float64)
 
         self.iter = 0
-        self.frame = frame
 
     def copy(self):
-        return Point3d(self.frame, self.coords)
+        return Point3d(self.coords)
 
 
     def __getattr__(self, name):
@@ -91,10 +90,10 @@ class Point3d(object):
 
     def __repr__(self):
         return "Point3d({0}, {1}, {2})".format(self.x, self.y, self.z)
-
+    '''
     def __str__(self):
         return "({0}, {1}, {2})".format(self.x, self.y, self.z)
-    '''
+
 # UPDATE TO INCLUDE FRAME CONSIDERATION
     def __add__(self, other):
         try:
