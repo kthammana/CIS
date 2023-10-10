@@ -25,29 +25,28 @@ class Point3d(object):
             # if receives a list
             try:
                 assert len(x) == 3
-                self.coords = np.array(x+[1],dtype=np.float64)
+                self.coords = np.array(x,dtype=np.float64)
             except:
                 raise ValueError('To create a Point3d with a list it must have length 3')
         elif type(x) == tuple:
             # if receives a tuple
             try:
                 assert len(x) == 3
-                self.coords = np.array(list(x)+[1],dtype=np.float64)
+                self.coords = np.array(list(x),dtype=np.float64)
             except:
                 raise ValueError('To create a Point3d with a tuple it must have length 3')
         elif type(x) == np.ndarray:
             try:
-                assert x.ndim == 1 and x.size == 4 and x[3] == 1
+                assert x.ndim == 1 and x.size == 3
                 self.coords = np.array(x, dtype=np.float64)
             except:
                 print ("ndim", x.ndim)
                 print ("size", x.size)
-                print ("[3]", x[3])
-                raise ValueError('To create a Point3d with an np.array it must have ndim 1, size 4, and the last element must be 1')
+                raise ValueError('To create a Point3d with an np.array it must have ndim 1 and size 3')
         elif type(x) == Point3d:
             self.coords = np.array(x.coords, dtype=np.float64)
         else:
-            self.coords = np.array([x,y,z,1], dtype=np.float64)
+            self.coords = np.array([x,y,z], dtype=np.float64)
 
         self.iter = 0
         self.frame = frame
@@ -104,7 +103,7 @@ class Point3d(object):
             x = self.x + other.x
             y = self.y + other.y
             z = self.z + other.z
-            return Point3d(x,y,z)
+            return Point3d(self.frame, x,y,z)
         except:
             raise TypeError("Arithmetic requires 2 Points in same frame")
 
@@ -115,7 +114,7 @@ class Point3d(object):
             x = self.x - other.x
             y = self.y - other.y
             z = self.z - other.z
-            return Point3d(x,y,z)
+            return Point3d(self.frame, x,y,z)
         except:
             raise TypeError("Arithmetic requires 2 Points in same frame")
 
@@ -126,7 +125,7 @@ class Point3d(object):
             x = self.x * other
             y = self.y * other
             z = self.z * other
-            return Point3d(x,y,z)
+            return Point3d(self.frame, x,y,z)
         except:
             raise TypeError("Arithmetic requires 2 Points in same frame")
 
@@ -167,28 +166,25 @@ class Point3d(object):
     def rotateX(self, radians):
         c = np.cos(radians)
         s = np.sin(radians)
-        xmat = np.array([[1, 0, 0, 0],
-                        [0, c,-s, 0],
-                        [0, s, c, 0],
-                        [0, 0, 0, 1]])
+        xmat = np.array([[1, 0, 0],
+                        [0, c,-s],
+                        [0, s, c]])
         self.coords = xmat.dot(self.coords)
 
     def rotateY(self, radians):
         c = np.cos(radians)
         s = np.sin(radians)
-        ymat = np.array([[c, 0, s, 0],
-                        [ 0, 1, 0, 0],
-                        [-s, 0, c, 0],
-                        [ 0, 0, 0, 1]])
+        ymat = np.array([[c, 0, s],
+                        [ 0, 1, 0],
+                        [-s, 0, c]])
         self.coords = ymat.dot(self.coords)
 
     def rotateZ(self, radians):
         c = np.cos(radians)
         s = np.sin(radians)
-        zmat = np.array([[c, -s, 0, 0],
-                        [s, c, 0, 0],
-                        [0, 0, 1, 0],
-                        [0, 0, 0, 1]])
+        zmat = np.array([[c, -s, 0],
+                        [s, c, 0],
+                        [0, 0, 1]])
         self.coords = zmat.dot(self.coords)
         
     def visualize(self, other):
