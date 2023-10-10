@@ -53,7 +53,7 @@ def read_calreadings(filename):
     '''
     file = open(filename, 'r')
     params = file.readline().replace(' ','').split(',')
-    print(params)
+    # print(params)
     D = np.empty((int(params[3]), int(params[0]), 3))
     A = np.empty((int(params[3]), int(params[1]), 3))
     C = np.empty((int(params[3]), int(params[2]), 3))

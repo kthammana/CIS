@@ -1,7 +1,9 @@
 import numpy as np
 from FileIO import read_calbody, read_calreadings
+from Frame import Frame
+from Point3d import Point3d
 
-def registrationArunMethod(a, b):
+def registrationArunMethod(a, b, frame_name):
     at = a.transpose()
     bt = b.transpose()
     a_c = np.mean(at, axis=1).reshape((-1,1))
@@ -16,11 +18,22 @@ def registrationArunMethod(a, b):
     U, S, Vt = np.linalg.svd(H, full_matrices=True)
     R = np.matmul(np.transpose(Vt), np.transpose(U))
     T = b_c - np.matmul(R, a_c)
-    return R, T
+    F = Frame(frame_name, R, Point3d(frame_name, T[0][0], T[1][0], T[2][0]))
+    return F
 
 d, a, c = read_calbody("./PA1 Student Data/pa1-debug-a-calbody.txt")
 D, A, C = read_calreadings("./PA1 Student Data/pa1-debug-a-calreadings.txt")
-for i in range(D.shape[0]):
-    registrationArunMethod(D[i], d)
-print(D[0])
-print(d)
+# for i in range(D.shape[0]):
+#     registrationArunMethod(D[i], d)
+F_D = registrationArunMethod(d, D[0], "D")
+# Why D[0] and not all of D (i.e., all frames)? 
+# oh i was just testing it, it should be all of D
+# print('D[0]:',D[0])
+# print('d:',d)
+print('F_D:',F_D.R, F_D.p.coords)
+# d_i = F_D^-1 * D_i
+F_A = registrationArunMethod(a, A[0], "A")
+print('F_A:',F_A.R, F_A.p.coords)
+F_DA = F_D.inverse() * F_A
+C0_exp = F_DA * C[0]
+print(C0_exp)
