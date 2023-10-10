@@ -30,10 +30,10 @@ def read_calbody(filename):
         point = file.readline().replace(' ','').split(',')
         d[i] = point
     for i in range(int(params[1])):
-        point = Point3d(file.readline().replace(' ','').split(','))
+        point = file.readline().replace(' ','').split(',')
         a[i] = point
     for i in range(int(params[2])):
-        point = Point3d(file.readline().replace(' ','').split(','))
+        point = file.readline().replace(' ','').split(',')
         c[i] = point
     return d, a, c
 
