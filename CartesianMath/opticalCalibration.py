@@ -1,10 +1,10 @@
 import numpy as np
 from Point3d import Point3d
 from Frame import Frame
-from FileIO import read_optpivot, read_output
+from FileIO import read_calbody, read_optpivot, read_output
 from Registration import registrationArunMethod
 
-def opticalCalibration(D, H):
+def opticalCalibration(d, D, H):
     # Dt = D[0].transpose()
     # D0 = np.mean(Dt, axis=1).reshape((-1,1))
     # d = Dt - D0
@@ -16,14 +16,15 @@ def opticalCalibration(D, H):
     # print(np.linalg.det(F_G.R))
     negI = [[-1, 0, 0], [0, -1, 0], [0, 0, -1]]
     for i in range(0, D.shape[0]):
-        Dt = D[i].transpose()
-        D0 = np.mean(Dt, axis=1).reshape((-1,1))
-        d = Dt - D0
-        F_D = registrationArunMethod(d.transpose(), D[i], "D")
+        # Dt = D[i].transpose()
+        # D0 = np.mean(Dt, axis=1).reshape((-1,1))
+        # d = Dt - D0
+        F_D = registrationArunMethod(d, D[i], "D")
+        # F_D = registrationArunMethod(d.transpose(), D[i], "D")
         # Ht = H[i].transpose()
         # H0 = np.mean(Ht, axis=1).reshape((-1,1))
         # h = Ht - H0
-        # F_H = registrationArunMethod(h.transpose(), H[i], "H")
+        F_H = registrationArunMethod(h.transpose(), H[i], "H")
         F_DH = F_D.inverse() * F_H
         # print('det:',np.linalg.det(F_DH.R))
         if i == 0:
@@ -43,9 +44,10 @@ def opticalCalibration(D, H):
     return point
 
 
-D,H = read_optpivot("../PA1 Student Data/pa1-debug-a-optpivot.txt")
-P_opt_exp = opticalCalibration(D,H)
+D,H = read_optpivot("../PA1 Student Data/pa1-debug-g-optpivot.txt")
+d,_,_ = read_calbody("../PA1 Student Data/pa1-debug-g-calbody.txt")
+P_opt_exp = opticalCalibration(d, D,H)
 print('Calculated output:', P_opt_exp.__str__())
-__,__,P_opt = read_output("../PA1 Student Data/pa1-debug-a-output1.txt")
+__,__,P_opt = read_output("../PA1 Student Data/pa1-debug-g-output1.txt")
 print('Expected output:',P_opt)
 print('Error:',P_opt_exp.error(P_opt),'mm')
