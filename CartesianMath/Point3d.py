@@ -93,7 +93,7 @@ class Point3d(object):
         return "Point3d({0}, {1}, {2})".format(self.x, self.y, self.z)
     '''
     def __str__(self):
-        return "({0}, {1}, {2})".format(self.x, self.y, self.z)
+        return "  {:.2f},   {:.2f},   {:.2f}".format(self.x, self.y, self.z)
 
     def __add__(self, other):
         try:
@@ -196,6 +196,5 @@ class Point3d(object):
         diff_x = self.x - float(other[0])
         diff_y = self.y - float(other[1])
         diff_z = self.z - float(other[2])
-        xy_error = math.sqrt(diff_x**2 + diff_y**2)
-        xyz_error = math.sqrt(xy_error**2 + diff_z**2)
+        xyz_error = math.sqrt(diff_x**2 + diff_y**2 + diff_z**2)
         return xyz_error
