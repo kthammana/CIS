@@ -10,6 +10,7 @@ from OpticalCalibration import opticalCalibration
     # P_EM
     # P_opt
     # C_1 through C_N_frames
+filename = "pa1-unknown-k-output1.txt" # output file name
 
 # Calculate P_EM
 d, a, c = read_calbody("./PA1 Student Data/pa1-unknown-k-calbody.txt")
@@ -22,7 +23,6 @@ P_opt = opticalCalibration(d,D,H)
 
 # Calculate C_exp and write all variables to output file
 D, A, C = read_calreadings("./PA1 Student Data/pa1-unknown-k-calreadings.txt")
-filename = "pa1-unknown-k-output1.txt"
 f = open("./OUTPUT/"+filename, "w")
 N_frames = D.shape[0]
 N_C = c.shape[0]

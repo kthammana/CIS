@@ -93,7 +93,7 @@ class Point3d(object):
         return "Point3d({0}, {1}, {2})".format(self.x, self.y, self.z)
     '''
     def __str__(self):
-        return "  {:.2f},   {:.2f},   {:.2f}".format(self.x, self.y, self.z)
+        return "  {:.2f},   {:.2f},   {:.2f}".format(round(self.x, 2), round(self.y, 2), round(self.z, 2))
 
     def __add__(self, other):
         try:
