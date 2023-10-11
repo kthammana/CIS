@@ -27,7 +27,7 @@ def opticalCalibration(d, D, H):
     
     # singular value decomposition least squares
     U, S, Vt = np.linalg.svd(R_DHs, full_matrices=True)
-    zeros = np.zeros((6,30))
+    zeros = np.zeros((Vt.shape[0],U.shape[0]-Vt.shape[0]))
     Sinv = np.hstack((np.linalg.inv(np.diag(S)), zeros))
     y = Sinv @ U.transpose() @ t_DHs
     x = Vt.transpose() @ y

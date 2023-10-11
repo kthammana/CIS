@@ -23,7 +23,7 @@ def pivotCalibration(G):
 
     # singular value decomposition least squares
     U, S, Vt = np.linalg.svd(R_Gs, full_matrices=True)
-    zeros = np.zeros((6,30))
+    zeros = np.zeros((Vt.shape[0],U.shape[0]-Vt.shape[0]))
     Sinv = np.hstack((np.linalg.inv(np.diag(S)), zeros))
     y = Sinv @ U.transpose() @ t_Gs
     x = Vt.transpose() @ y
