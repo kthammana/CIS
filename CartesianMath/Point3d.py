@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 # I took this code off this Github and added a frame variable
 
 class Point3d(object):
-    def __init__(self, frame, x=0, y=0, z=0):
+    def __init__(self, frame, x=0.0, y=0.0, z=0.0):
         if type(x) == list:
             # if receives a list
             try:
@@ -95,7 +95,6 @@ class Point3d(object):
     def __str__(self):
         return "({0}, {1}, {2})".format(self.x, self.y, self.z)
 
-# UPDATE TO INCLUDE FRAME CONSIDERATION
     def __add__(self, other):
         try:
             assert isinstance(other, Point3d)
@@ -192,3 +191,11 @@ class Point3d(object):
         y = np.array([self.y, other.__getattr__('y')])
         z = np.array([self.z, other.__getattr__('z')])
         return x,y,z
+    
+    def error(self, other):
+        diff_x = self.x - float(other[0])
+        diff_y = self.y - float(other[1])
+        diff_z = self.z - float(other[2])
+        xy_error = math.sqrt(diff_x**2 + diff_y**2)
+        xyz_error = math.sqrt(xy_error**2 + diff_z**2)
+        return xyz_error

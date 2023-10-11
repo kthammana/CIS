@@ -17,8 +17,6 @@ def pivotCalibration(G):
     R_Gs = np.hstack((F_G.R, negI))
     t_Gs = F_G.p.coords.transpose()[..., np.newaxis]
     for i in range(1, G.shape[0]):
-        Gt = G[i].transpose()
-        # g = Gt - G0 # took this out after reading a Piazza post
         F_G = registrationArunMethod(g.transpose(), G[i], "G")
         # print(np.linalg.det(F_G.R))
         R_G = np.hstack((F_G.R, negI))
@@ -51,5 +49,6 @@ def pivotCalibration(G):
 G = read_empivot("../PA1 Student Data/pa1-debug-g-empivot.txt")
 P_em_exp = pivotCalibration(G)
 print('Calculated output:', P_em_exp.__str__())
-__,P_em,P_opt = read_output("../PA1 Student Data/pa1-debug-g-output1.txt")
-print(P_em)
+__,P_em,__ = read_output("../PA1 Student Data/pa1-debug-g-output1.txt")
+print('Expected output:',P_em)
+print('Error:',P_em_exp.error(P_em),'mm')

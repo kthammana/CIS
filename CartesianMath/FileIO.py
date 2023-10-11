@@ -104,7 +104,7 @@ def read_optpivot(filename):
     '''
     file = open(filename, 'r')
     params = file.readline().replace(' ','').split(',')
-    print(params)
+    # print(params)
     D = np.empty((int(params[2]), int(params[0]), 3))
     H = np.empty((int(params[2]), int(params[1]), 3))
     for j in range(int(params[2])):
@@ -135,11 +135,11 @@ def read_output(filename):
     params = file.readline().replace(' ','').split(',')
     # print(params)
     C_exp = np.empty((int(params[1]), int(params[0]), 3))
-    P_em = file.readline().replace(' ','').split(',')
-    P_opt = file.readline().replace(' ','').split(',')
+    P_em = file.readline().replace("\n","").replace(' ','').split(',')
+    P_opt = file.readline().replace("\n","").replace(' ','').split(',')
     for j in range(int(params[1])): # changed from params[2]
         for i in range(int(params[0])):
-            point = file.readline().replace(' ','').split(',')
+            point = file.readline().replace("\n","").replace(' ','').split(',')
             C_exp[j][i] = point
     return C_exp, P_em, P_opt
 
