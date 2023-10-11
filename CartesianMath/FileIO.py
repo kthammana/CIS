@@ -81,13 +81,13 @@ def read_empivot(filename):
     '''
     file = open(filename, 'r')
     params = file.readline().replace(' ','').split(',')
-    print(params)
+    # print(params)
     G = np.empty((int(params[1]), int(params[0]), 3))
     for j in range(int(params[1])):
         for i in range(int(params[0])):
             point = file.readline().replace(' ','').split(',')
             G[j][i] = point
-    print(G.shape)
+    # print(G.shape)
     return G
 
 # optpivot.txt provides values read by the sensor
@@ -133,11 +133,11 @@ def read_output(filename):
     '''
     file = open(filename, 'r')
     params = file.readline().replace(' ','').split(',')
-    print(params)
+    # print(params)
     C_exp = np.empty((int(params[1]), int(params[0]), 3))
     P_em = file.readline().replace(' ','').split(',')
     P_opt = file.readline().replace(' ','').split(',')
-    for j in range(int(params[2])):
+    for j in range(int(params[1])): # changed from params[2]
         for i in range(int(params[0])):
             point = file.readline().replace(' ','').split(',')
             C_exp[j][i] = point

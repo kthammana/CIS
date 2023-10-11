@@ -4,7 +4,7 @@ from mpl_toolkits import mplot3d
 import matplotlib.pyplot as plt
 from Point3d import Point3d
 from Frame import Frame
-from FileIO import read_empivot
+from FileIO import read_empivot, read_output
 from Registration import registrationArunMethod
 
 def pivotCalibration(G):
@@ -18,7 +18,7 @@ def pivotCalibration(G):
     t_Gs = F_G.p.coords.transpose()[..., np.newaxis]
     for i in range(1, G.shape[0]):
         Gt = G[i].transpose()
-        g = Gt - G0
+        # g = Gt - G0 # took this out after reading a Piazza post
         F_G = registrationArunMethod(g.transpose(), G[i], "G")
         # print(np.linalg.det(F_G.R))
         R_G = np.hstack((F_G.R, negI))
@@ -44,8 +44,12 @@ def pivotCalibration(G):
     # x = np.matmul(Vt.transpose(), y)
     y = Sinv @ U.transpose() @ t_Gs
     x = Vt.transpose() @ y
-    print(x)
+    point = Point3d("EM", x[3][0],x[4][0],x[5][0])
+    return point
 
 
-G = read_empivot("./PA1 Student Data/pa1-debug-a-empivot.txt")
-pivotCalibration(G)
+G = read_empivot("../PA1 Student Data/pa1-debug-g-empivot.txt")
+P_em_exp = pivotCalibration(G)
+print('Calculated output:', P_em_exp.__str__())
+__,P_em,P_opt = read_output("../PA1 Student Data/pa1-debug-g-output1.txt")
+print(P_em)
