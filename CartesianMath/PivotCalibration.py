@@ -36,5 +36,5 @@ def pivotCalibration(G):
     # print(x[3:6])
 
 
-G = read_empivot("./PA1 Student Data/pa1-debug-d-empivot.txt")
+G = read_empivot("./PA1 Student Data/pa1-debug-a-empivot.txt")
 pivotCalibration(G)
