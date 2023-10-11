@@ -46,9 +46,9 @@ def pivotCalibration(G):
     return point
 
 
-G = read_empivot("../PA1 Student Data/pa1-debug-g-empivot.txt")
-P_em_exp = pivotCalibration(G)
-print('Calculated output:', P_em_exp.__str__())
-__,P_em,__ = read_output("../PA1 Student Data/pa1-debug-g-output1.txt")
-print('Expected output:',P_em)
-print('Error:',P_em_exp.error(P_em),'mm')
+# G = read_empivot("./PA1 Student Data/pa1-debug-a-empivot.txt")
+# P_em_exp = pivotCalibration(G)
+# print('Calculated output:', P_em_exp.__str__())
+# __,P_em,__ = read_output("./PA1 Student Data/pa1-debug-a-output1.txt")
+# print('Expected output:',P_em)
+# print('Error:',P_em_exp.error(P_em),'mm')

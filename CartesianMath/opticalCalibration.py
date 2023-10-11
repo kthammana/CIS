@@ -44,10 +44,10 @@ def opticalCalibration(d, D, H):
     return point
 
 
-D,H = read_optpivot("../PA1 Student Data/pa1-debug-g-optpivot.txt")
-d,_,_ = read_calbody("../PA1 Student Data/pa1-debug-g-calbody.txt")
-P_opt_exp = opticalCalibration(d, D,H)
-print('Calculated output:', P_opt_exp.__str__())
-__,__,P_opt = read_output("../PA1 Student Data/pa1-debug-g-output1.txt")
-print('Expected output:',P_opt)
-print('Error:',P_opt_exp.error(P_opt),'mm')
+# D,H = read_optpivot("../PA1 Student Data/pa1-debug-g-optpivot.txt")
+# d,_,_ = read_calbody("../PA1 Student Data/pa1-debug-g-calbody.txt")
+# P_opt_exp = opticalCalibration(d, D,H)
+# print('Calculated output:', P_opt_exp.__str__())
+# __,__,P_opt = read_output("../PA1 Student Data/pa1-debug-g-output1.txt")
+# print('Expected output:',P_opt)
+# print('Error:',P_opt_exp.error(P_opt),'mm')
