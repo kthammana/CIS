@@ -87,6 +87,7 @@ def read_empivot(filename):
         for i in range(int(params[0])):
             point = file.readline().replace(' ','').split(',')
             G[j][i] = point
+    print(G.shape)
     return G
 
 # optpivot.txt provides values read by the sensor
@@ -144,3 +145,4 @@ def read_output(filename):
 
 # read_calbody("./PA1 Student Data/pa1-debug-a-calbody.txt")
 # read_calreadings("./PA1 Student Data/pa1-debug-a-calreadings.txt")
+# read_empivot("./PA1 Student Data/pa1-debug-a-empivot.txt")
