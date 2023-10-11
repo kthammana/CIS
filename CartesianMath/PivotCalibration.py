@@ -12,7 +12,7 @@ def pivotCalibration(G):
     G0 = np.mean(Gt, axis=1).reshape((-1,1))
     g = Gt - G0
     F_G = registrationArunMethod(g.transpose(), G[0], "G")
-    print(np.linalg.det(F_G.R))
+    # print(np.linalg.det(F_G.R))
     negI = [[-1, 0, 0], [0, -1, 0], [0, 0, -1]]
     R_Gs = np.hstack((F_G.R, negI))
     t_Gs = F_G.p.coords.transpose()[..., np.newaxis]
@@ -20,7 +20,7 @@ def pivotCalibration(G):
         Gt = G[i].transpose()
         g = Gt - G0
         F_G = registrationArunMethod(g.transpose(), G[i], "G")
-        print(np.linalg.det(F_G.R))
+        # print(np.linalg.det(F_G.R))
         R_G = np.hstack((F_G.R, negI))
         R_Gs = np.vstack((R_Gs, R_G))
         t_Gs = np.vstack((t_Gs, F_G.p.coords.transpose()[..., np.newaxis]))
@@ -38,10 +38,12 @@ def pivotCalibration(G):
     U, S, Vt = np.linalg.svd(R_Gs, full_matrices=True)
     zeros = np.zeros((6,30))
     Sinv = np.hstack((np.linalg.inv(np.diag(S)), zeros))
-    print(Sinv.shape)
-    print(U.transpose().shape)
-    y = np.matmul(np.matmul(Sinv, U.transpose()), t_Gs)
-    x = np.matmul(Vt.transpose(), y)
+    # print(Sinv.shape)
+    # print(U.transpose().shape)
+    # y = np.matmul(np.matmul(Sinv, U.transpose()), t_Gs)
+    # x = np.matmul(Vt.transpose(), y)
+    y = Sinv @ U.transpose() @ t_Gs
+    x = Vt.transpose() @ y
     print(x)
 
 
