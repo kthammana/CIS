@@ -22,20 +22,20 @@ print(cwd)
     # C_1 through C_N_frames
 
 # output file name and directory
-filename = "pa1-unknown-k-output2.txt"
+filename = "pa1-unknown-h-output2.txt"
 f = open("../OUTPUT/"+filename, "w")
 
 # Calculate P_EM
-d, a, c = read_calbody("PA1 Student Data/pa1-unknown-k-calbody.txt")
-G = read_empivot("PA1 Student Data/pa1-unknown-k-empivot.txt")
+d, a, c = read_calbody("PA1 Student Data/pa1-unknown-h-calbody.txt")
+G = read_empivot("PA1 Student Data/pa1-unknown-h-empivot.txt")
 P_EM = pivotCalibration(G)
 
 # Calculate P_opt
-D,H = read_optpivot("PA1 Student Data/pa1-unknown-k-optpivot.txt")
+D,H = read_optpivot("PA1 Student Data/pa1-unknown-h-optpivot.txt")
 P_opt = opticalCalibration(d,D,H)
 
 # Calculate C_exp and write all variables to output file
-D, A, C = read_calreadings("PA1 Student Data/pa1-unknown-k-calreadings.txt")
+D, A, C = read_calreadings("PA1 Student Data/pa1-unknown-h-calreadings.txt")
 N_frames = D.shape[0]
 N_C = c.shape[0]
 f.write(str(N_C) + ", " + str(N_frames) + ", " + filename + "\n")
