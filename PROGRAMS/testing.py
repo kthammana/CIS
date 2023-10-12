@@ -5,11 +5,11 @@ from PivotCalibration import pivotCalibration
 from OpticalCalibration import opticalCalibration
 from Point3d import Point3d
 
-C_exp,P_em,P_opt = read_output("PA1 Student Data/pa1-debug-g-output1.txt")
+C_exp,P_em,P_opt = read_output("PA1 Student Data/pa1-debug-a-output1.txt")
 
 # calculating expected Cs
-d, a, c = read_calbody("PA1 Student Data/pa1-debug-g-calbody.txt")
-D, A, C = read_calreadings("PA1 Student Data/pa1-debug-g-calreadings.txt")
+d, a, c = read_calbody("PA1 Student Data/pa1-debug-a-calbody.txt")
+D, A, C = read_calreadings("PA1 Student Data/pa1-debug-a-calreadings.txt")
 error = 0
 for i in range(D.shape[0]):
     F_D = registrationArunMethod(d, D[i], "D")
@@ -23,15 +23,15 @@ error = error/(C_exp.shape[0]*C_exp.shape[1])
 print('Average Expected C Error:',error)
 
 # EM pivot calibration
-G = read_empivot("PA1 Student Data/pa1-debug-g-empivot.txt")
+G = read_empivot("PA1 Student Data/pa1-debug-a-empivot.txt")
 P_em_exp = pivotCalibration(G)
 print('EM Calculated output:', P_em_exp.__str__())
 print('EM Expected output:',P_em)
 print('EM Pivot Error:',P_em_exp.error(P_em),'mm')
 
 # Optical tracker pivot calibration
-D,H = read_optpivot("PA1 Student Data/pa1-debug-g-optpivot.txt")
-d,_,_ = read_calbody("PA1 Student Data/pa1-debug-g-calbody.txt")
+D,H = read_optpivot("PA1 Student Data/pa1-debug-a-optpivot.txt")
+d,_,_ = read_calbody("PA1 Student Data/pa1-debug-a-calbody.txt")
 P_opt_exp = opticalCalibration(d,D,H)
 print('OPT Calculated output:', P_opt_exp.__str__())
 print('OPT Expected output:',P_opt)

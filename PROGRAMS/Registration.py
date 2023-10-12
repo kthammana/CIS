@@ -21,7 +21,8 @@ def registrationArunMethod(a, b, frame_name):
         
     # singular value decomposition
     U, S, Vt = np.linalg.svd(H, full_matrices=True)
-    R = np.matmul(np.transpose(Vt), np.transpose(U))
+    # makes sure that det of R is equal to 1
+    R = Vt.transpose() @ np.diag([1, 1, np.linalg.det(Vt.transpose()) * np.linalg.det(U.transpose())]) @ U.transpose()
     T = b_c - np.matmul(R, a_c)
     F = Frame(frame_name, R, Point3d(frame_name, T[0][0], T[1][0], T[2][0]))
     return F
