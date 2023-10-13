@@ -16,7 +16,7 @@ cwd = os.getcwd()
 print(cwd)
 
 # change input and output filenames
-filename = "pa1-unknown-h-output3.txt"
+filename = "pa1-unknown-h-output1.txt"
 d, a, c = read_calbody("PA1 Student Data/pa1-unknown-h-calbody.txt")
 G = read_empivot("PA1 Student Data/pa1-unknown-h-empivot.txt")
 D,H = read_optpivot("PA1 Student Data/pa1-unknown-h-optpivot.txt")
