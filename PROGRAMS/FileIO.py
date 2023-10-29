@@ -104,11 +104,11 @@ def read_optpivot(filename):
             H[j][i] = point
     return D, H
 
-# output.txt provides output file for problem 1
-def read_output(filename):
+# output1.txt provides output file for problem 1
+def read_output1(filename):
     '''
     Returns:
-    C_exp: N_frames x N_C x 3 (N_frames x N_D points)
+    C_exp: N_frames x N_C x 3 (N_frames x N_C points)
     expected C coordinates
     P_em: Px, Py, Pz
     estimated post position with EM probe pivot calibration
@@ -129,3 +129,82 @@ def read_output(filename):
             point = file.readline().replace("\n","").replace(' ','').split(',')
             C_exp[j][i] = point
     return C_exp, P_em, P_opt
+
+# ct-fiducials.txt describes CT fiducial coordinates b_j
+def read_ctfiducials(filename):
+    '''
+    Returns:
+    b: N_B x 3 (N_B points)
+    coordinates of CT fiducials
+
+    Definitions:
+    N_B: number of CT fiducials
+    '''
+    file = open(filename, 'r')
+    params = file.readline().replace(' ','').split(',')
+    b = np.empty((int(params[0]), 3))
+    for i in range(int(params[0])):
+        point = file.readline().replace("\n","").replace(' ','').split(',')
+        b[i] = point
+    return b
+
+# em-fiducials.txt describes frames of data in which the probe is in contact
+# with the corresponding CT fiducials
+def read_emfiducials(filename):
+    '''
+    Returns:
+    G: N_frames x N_G x 3 (N_frames x N_G points)
+    coordinates of CT fiducials
+
+    Definitions:
+    N_G: number of EM markers on probe
+    N_frames: number of data frames
+    '''
+    file = open(filename, 'r')
+    params = file.readline().replace(' ','').split(',')
+    G = np.empty((int(params[1]), int(params[0]), 3))
+    for j in range(int(params[1])):
+        for i in range(int(params[0])):
+            point = file.readline().replace("\n","").replace(' ','').split(',')
+            G[j][i] = point
+    return G
+
+# em-nav.txt describes frames of data defining test points - able to find
+# corresponding positions of the probe tip with respect to CT coordinates
+def read_emnav(filename):
+    '''
+    Returns:
+    G: N_frames x N_G x 3 (N_frames x N_G points)
+    coordinates of CT fiducials
+
+    Definitions:
+    N_G: number of EM markers on probe
+    N_frames: number of data frames
+    '''
+    file = open(filename, 'r')
+    params = file.readline().replace(' ','').split(',')
+    G = np.empty((int(params[1]), int(params[0]), 3))
+    for j in range(int(params[1])):
+        for i in range(int(params[0])):
+            point = file.readline().replace("\n","").replace(' ','').split(',')
+            G[j][i] = point
+    return G
+
+# output2.txt gives positions of prove tip in CT coordinates, corresponding to
+# frames of data in em-nav.txt
+def read_output2(filename):
+    '''
+    Returns:
+    b: N_frames x 3 (N_frames points)
+    coordinates of CT fiducials
+
+    Definitions:
+    N_frames: number of frames of data
+    '''
+    file = open(filename, 'r')
+    params = file.readline().replace(' ','').split(',')
+    v = np.empty((int(params[0]), 3))
+    for i in range(int(params[0])):
+        point = file.readline().replace("\n","").replace(' ','').split(',')
+        v[i] = point
+    return v
