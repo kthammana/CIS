@@ -27,5 +27,7 @@ def pivotCalibration(G):
     Sinv = np.hstack((np.linalg.inv(np.diag(S)), zeros))
     y = Sinv @ U.transpose() @ t_Gs
     x = Vt.transpose() @ y
+
+    # return p_dimple
     point = Point3d("EM", x[3][0],x[4][0],x[5][0])
     return point

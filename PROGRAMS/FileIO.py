@@ -169,7 +169,7 @@ def read_emfiducials(filename):
             G[j][i] = point
     return G
 
-# em-nav.txt describes frames of data defining test points - able to find
+# em-nav.txt describes frames of data defining test points - need to find
 # corresponding positions of the probe tip with respect to CT coordinates
 def read_emnav(filename):
     '''
