@@ -1,8 +1,8 @@
 import numpy as np
 from FileIO import read_calbody, read_calreadings, read_empivot, read_optpivot, read_output1
 from Registration import registrationArunMethod
-from PivotCalibration import pivotCalibration
-from OpticalCalibration import opticalCalibration
+from EMPivotCalibration import pivotCalibration
+from OpticalPivotCalibration import opticalCalibration
 from Point3d import Point3d
 
 C_exp,P_em,P_opt = read_output1("PA1 Student Data/pa1-debug-a-output1.txt")

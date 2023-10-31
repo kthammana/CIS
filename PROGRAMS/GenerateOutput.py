@@ -8,8 +8,8 @@ import numpy as np
 from Point3d import Point3d
 from FileIO import read_calbody, read_calreadings, read_empivot, read_optpivot
 from Registration import registrationArunMethod
-from PivotCalibration import pivotCalibration
-from OpticalCalibration import opticalCalibration
+from EMPivotCalibration import pivotCalibration
+from OpticalPivotCalibration import opticalCalibration
 
 import os
 cwd = os.getcwd()
