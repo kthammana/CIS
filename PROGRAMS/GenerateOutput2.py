@@ -20,7 +20,7 @@ print(cwd)
 filename = "pa1-unknown-h-output1.txt"
 d, a, c = read_calbody("PA1 Student Data/pa1-unknown-h-calbody.txt")
 G = read_empivot("PA1 Student Data/pa1-unknown-h-empivot.txt")
-D,H = read_optpivot("PA1 Student Data/pa1-unknown-h-optpivot.txt")
+D, H = read_optpivot("PA1 Student Data/pa1-unknown-h-optpivot.txt")
 D, A, C = read_calreadings("PA1 Student Data/pa1-unknown-h-calreadings.txt")
 
 # output file:
