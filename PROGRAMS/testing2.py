@@ -1,16 +1,16 @@
 import numpy as np
-from FileIO import read_calbody, read_calreadings, read_empivot, read_optpivot, read_output1
+from FileIO import read_calbody, read_calreadings, read_empivot, read_optpivot, read_output1, read_ctfiducials, read_emfiducials, read_emnav, read_output2
 from Registration import registrationArunMethod
 from EMPivotCalibration import pivotCalibration
 from OpticalPivotCalibration import opticalCalibration
 from Point3d import Point3d
 from DistortionCorrection import calcDistortionCorrection, correctDistortion
 
-C_exp,P_em,P_opt = read_output1("PA1 Student Data/pa1-debug-g-output1.txt")
+C_exp,P_em,P_opt = read_output1("PA2 Student Data/pa2-debug-a-output1.txt")
 
 # calculating expected Cs
-d, a, c = read_calbody("PA1 Student Data/pa1-debug-g-calbody.txt")
-D, A, C = read_calreadings("PA1 Student Data/pa1-debug-g-calreadings.txt")
+d, a, c = read_calbody("PA2 Student Data/pa2-debug-a-calbody.txt")
+D, A, C = read_calreadings("PA2 Student Data/pa2-debug-a-calreadings.txt")
 C_expected = np.zeros(C.shape)
 for i in range(D.shape[0]):
     F_D = registrationArunMethod(d, D[i], "D")
@@ -30,7 +30,7 @@ for i in range(C.shape[0]): # N_frames
 print('Average calibration error per point:', np.mean(C_errors), 'mm')
 
 ### DEBUGGING REGISTRATION
-# use given d and artificial D
+# use given d (from PA1 data set g) and artificial D
 artiD = np.array([[0.3404, 0.5853, 0.2238],[-100.2885, -80.1432, 76.7532], 
               [111.0513, -62.0671, 79.7082],[10.4224, -142.7955, 156.2376],
               [11.1531, -109.2218, -101.3906],[-89.4758, -189.9503, -24.8612],
@@ -42,16 +42,16 @@ print('Calculated R:', artiF_D.R)
 print('Expected R:',artiR)
 print('Calculated p:',artiF_D.p.__str__())
 print('Expected p: 0.3404, 0.5853, 0.2238')
-reg_error = 0
-for i in range(3):
-    temp_point = Point3d("D",F_D.R[i])
-    reg_error += temp_point.error(artiR[i])
-    # print(i,':',reg_error)
-reg_error += artiF_D.p.error([0.3404, 0.5853, 0.2238])
-print('Registration error:',reg_error)
+# reg_error = 0
+# for i in range(3):
+#     temp_point = Point3d("D",F_D.R[i])
+#     reg_error += temp_point.error(artiR[i])
+#     # print(i,':',reg_error)
+# reg_error += artiF_D.p.error([0.3404, 0.5853, 0.2238])
+# print('Registration error:',reg_error)
 
 # EM pivot calibration
-G = read_empivot("PA1 Student Data/pa1-debug-g-empivot.txt")
+G = read_empivot("PA2 Student Data/pa2-debug-a-empivot.txt")
 G_corr = np.empty(G.shape)
 for i in range(G_corr.shape[0]):
     G_corr[i] = correctDistortion(G[i], coef, q_min, q_max, 3)
@@ -60,3 +60,34 @@ P_em_exp = pivotCalibration(G_corr)
 print('EM Calculated output:', P_em_exp.__str__())
 print('EM Expected output:',P_em)
 print('EM Pivot Error:',P_em_exp.error(P_em),'mm')
+
+# Fiducial point registration
+b = read_ctfiducials("PA2 Student Data/pa2-debug-a-ct-fiducials.txt")
+G_EM = read_emfiducials("PA2 Student Data/pa2-debug-a-em-fiducialss.txt")
+G_EM_corr = np.empty(G_EM.shape)
+b_EM = np.empty(b.shape)
+for i in range(G_EM_corr.shape[0]):
+    G_EM_corr[i] = correctDistortion(G_EM[i], coef, q_min, q_max, 3)
+    F_G = registrationArunMethod(b, G_EM_corr[i], "G") # probe to CT fiducial
+    F_G = F_G.inverse()
+    b_EM[i] = F_G.R.dot(P_em_exp.coords) + F_G.p.coords # do i need to inverse the frame?
+# print(b_EM)
+
+# Calculate F_reg
+F_reg = registrationArunMethod(b, b_EM, "EM")
+
+# Compute tip location w.r.t. CT image
+G_nav = read_emnav("PA2 Student Data/pa2-debug-a-EM-nav.txt")
+G_nav_corr = np.empty(G_nav.shape)
+v_exp = np.empty([G_nav.shape[0],3])
+for i in range(G_nav_corr.shape[0]):
+    G_nav_corr[i] = correctDistortion(G_nav[i], coef, q_min, q_max, 3)
+    v_exp[i] = F_reg.R.dot(G_nav_corr[0][i]) + F_reg.p.coords
+
+# Calculate average v error
+v = read_output2("PA2 Student Data/pa2-debug-a-output2.txt")
+errors = np.empty(v.shape[0])
+for i in range(v.shape[0]):
+    p_v = Point3d("CT",v[i])
+    errors[i] = p_v.error(v_exp[i])
+print('Avg v error:', np.mean(errors))
