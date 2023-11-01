@@ -4,8 +4,20 @@ from Point3d import Point3d
 from FileIO import read_calbody, read_calreadings
 from Registration import registrationArunMethod
 
-def bersteinPolynomial(N, k, v):
+def berstein(N, k, v):
     return math.comb(N, k) * (1-v)**(N-k) * v**k
+
+def bersteinPolynomialF(N, u):
+    F = np.empty((u.shape[0], N**3))
+    for x in range(u.shape[0]):
+        index = 0
+        for i in range(N):
+            for j in range(N):
+                for k in range(N):
+                    F[x][index] = berstein(N, i, u[x][0])*berstein(N, j, u[x][1])*berstein(N, k, u[x][2])
+                    index += 1
+
+    return F
 
 def calcDistortionCorrection(p, q):
     '''
@@ -27,7 +39,19 @@ def calcDistortionCorrection(p, q):
     u = np.empty(q.shape)
     for i in range(q.shape[0]):
          u[i] = (q[i] - q_min)/diff
-    # return coef, q_min, q_max
+
+    # create F matrix of berstein polynomials based on measurements
+    F = bersteinPolynomialF(3, u)
+    print(F.shape)
+
+    # singular value decomposition least squares
+    U, S, Vt = np.linalg.svd(F, full_matrices=True)
+    zeros = np.zeros((Vt.shape[0],U.shape[0]-Vt.shape[0]))
+    Sinv = np.hstack((np.linalg.inv(np.diag(S)), zeros))
+    y = Sinv @ U.transpose() @ p
+    coef = Vt.transpose() @ y
+
+    return coef, q_min, q_max
 
 
 # def applyDistortionCorrection(X, coef):
