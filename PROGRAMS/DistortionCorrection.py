@@ -7,7 +7,12 @@ from Registration import registrationArunMethod
 def berstein(N, k, v):
     return math.comb(N, k) * (1-v)**(N-k) * v**k
 
-def bersteinPolynomialF(N, u):
+def bersteinPolynomialF(N, q, q_min, q_max):
+    diff = q_max - q_min
+    u = np.empty(q.shape)
+    for i in range(q.shape[0]):
+         u[i] = (q[i] - q_min)/diff
+
     F = np.empty((u.shape[0], N**3))
     for x in range(u.shape[0]):
         index = 0
@@ -19,7 +24,7 @@ def bersteinPolynomialF(N, u):
 
     return F
 
-def calcDistortionCorrection(p, q):
+def calcDistortionCorrection(p, q, N):
     '''
     Parameters:
     p: ground-truth of 3D points, with no distortion
@@ -34,14 +39,9 @@ def calcDistortionCorrection(p, q):
     # create a bounding box and scale measured values
     q_min = np.amin(q, axis=0)
     q_max = np.amax(q, axis=0)
-    diff = q_max - q_min
-
-    u = np.empty(q.shape)
-    for i in range(q.shape[0]):
-         u[i] = (q[i] - q_min)/diff
 
     # create F matrix of berstein polynomials based on measurements
-    F = bersteinPolynomialF(3, u)
+    F = bersteinPolynomialF(N, q, q_min, q_max)
     print(F.shape)
 
     # singular value decomposition least squares
@@ -53,10 +53,11 @@ def calcDistortionCorrection(p, q):
 
     return coef, q_min, q_max
 
+def correctDistortion(q, coef, q_max, q_min, N):
+    F = bersteinPolynomialF(N, q, q_min, q_max)
+    p = F @ coef
 
-# def applyDistortionCorrection(X, coef):
-
-#     return X_corr # return corrected C values
+    return p # return values without distortion
 
 # calculating expected Cs
 d, a, c = read_calbody("PA1 Student Data/pa1-debug-a-calbody.txt")
@@ -68,7 +69,11 @@ for i in range(D.shape[0]):
     F_DA = F_D.inverse() * F_A
     for j in range(c.shape[0]):
         C0_exp = np.matmul(F_DA.R, c[j].transpose()[..., np.newaxis]) + F_DA.p.coords.transpose()[..., np.newaxis]
-        # gen_point = Point3d("DA", C0_exp[0][0], C0_exp[1][0], C0_exp[2][0])
         C_expected[i][j] = [C0_exp[0][0], C0_exp[1][0], C0_exp[2][0]]
 
-calcDistortionCorrection(np.vstack(C_expected), np.vstack(C))
+coef, q_min, q_max = calcDistortionCorrection(np.vstack(C_expected), np.vstack(C), 3)
+
+# print("C_expected: \n")
+# print(C_expected)
+# print("C with distortion: \n")
+# print(correctDistortion(np.vstack(C), coef, q_min, q_max, 3))
