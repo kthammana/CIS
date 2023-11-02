@@ -32,3 +32,13 @@ def pivotCalibration(G):
     p_dimple = Point3d("EM", x[3][0],x[4][0],x[5][0])
     p_tip = Point3d("EM", x[0][0],x[1][0],x[2][0])
     return p_dimple, p_tip, g
+
+def GtoEM(G, p_tip, g):
+    B = np.empty((G.shape[0], 3))
+
+    # calculating new pointer location using Gs and p_tip
+    for i in range(G.shape[0]):
+        F_G = registrationArunMethod(g.transpose(), G[i], "G")
+        B[i] = F_G.R @ p_tip.coords + F_G.p.coords
+        
+    return B
