@@ -31,4 +31,4 @@ def pivotCalibration(G):
     # return p_dimple
     p_dimple = Point3d("EM", x[3][0],x[4][0],x[5][0])
     p_tip = Point3d("EM", x[0][0],x[1][0],x[2][0])
-    return p_dimple, p_tip
+    return p_dimple, p_tip, g
