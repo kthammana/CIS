@@ -7,7 +7,7 @@ Filename: GenerateOutputPA1.py, GenerateOutputPA2.py
 Instructions: change input and output file names as necessary for the correct dataset. Make sure you are in the PROGRAMS directory. GenerateOutputPA1.py creates the output1 file containing EM pivot position, OPT pivot position, and C_expected. GenerateOutputPA2.py creates the output2 file containing probe tip locations in CT coordinates.
 
 ## Files Summary
-FileIO.py: functions to read the calbody, calreadings, empivot, optpivot, and output1 files.  
+FileIO.py: functions to read the calbody, calreadings, empivot, optpivot, ct-fiducials, em-fiducials, em-nav, output1, and output2 files.  
 GenerateOutput.py: functions to read the unknown dataset files and generate an output1 txt file.
 Point3d.py: class to create 3d point objects, calculate error between 2 points, print as string, save frame data, and other cartesian math functions.
 Frame.py: class to do frame transformations, save frame data, and transform points.
