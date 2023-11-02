@@ -18,7 +18,7 @@ print(cwd)
 
 # change input and output filenames
 dataset = "PA2 Student Data/pa2-debug-f"
-output2_filename = "pa2-debug-f-output2_2.txt"
+output2_filename = "pa2-debug-f-output2.txt"
 
 # output file:
     # N_frames, NAME-OUTPUT2.TXT
