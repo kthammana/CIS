@@ -3,6 +3,15 @@ from Point3d import Point3d
 from Registration import registrationArunMethod
 
 def pivotCalibration(G):
+    '''
+    Parameters: G: N_frames x N_G x 3 (N_frames x N_G points)
+    points to be used for pivot calibration
+
+    Return:
+    p_dimple: point of the pivot in EM coordinates
+    p_tip: center of pointer to tip in local coordinates
+    g: local coordinate points to be use to find local transformation
+    '''
 
     # defining a local coordinate system
     Gt = G[0].transpose()
@@ -34,9 +43,21 @@ def pivotCalibration(G):
     return p_dimple, p_tip, g
 
 def GtoEM(G, p_tip, g):
+    '''
+    Parameters: 
+    G: N_frames x N_G x 3 (N_frames x N_G points)
+        points to be used for pivot calibration
+    p_tip: center of pointer to tip in local coordinates
+    g: local coordinate points to be use to find local transformation
+
+    Return:
+    B: location of the pointer
+    '''
     B = np.empty((G.shape[0], 3))
 
     # calculating new pointer location using Gs and p_tip
+    # find transformation between new Gs and local coordinate gs that 
+    # p_tip is defined to
     for i in range(G.shape[0]):
         F_G = registrationArunMethod(g.transpose(), G[i], "G")
         B[i] = F_G.R @ p_tip.coords + F_G.p.coords

@@ -1,10 +1,10 @@
-# CIS PA#1
+# CIS PA#1-2
 Kiana Bronder, kbronde1
 Keerthana Thammana, lthamma1
 
 ## Executable
-Filename: GenerateOutput.py
-Instructions: change input and output file names as necessary for the correct dataset. Make sure you are in the PROGRAMS directory.
+Filename: GenerateOutputPA1.py, GenerateOutputPA2.py
+Instructions: change input and output file names as necessary for the correct dataset. Make sure you are in the PROGRAMS directory. GenerateOutputPA1.py creates the output1 file containing EM pivot position, OPT pivot position, and C_expected. GenerateOutputPA2.py creates the output2 file containing probe tip locations in CT coordinates.
 
 ## Files Summary
 FileIO.py: functions to read the calbody, calreadings, empivot, optpivot, and output1 files.  
@@ -12,6 +12,7 @@ GenerateOutput.py: functions to read the unknown dataset files and generate an o
 Point3d.py: class to create 3d point objects, calculate error between 2 points, print as string, save frame data, and other cartesian math functions.
 Frame.py: class to do frame transformations, save frame data, and transform points.
 Registration.py: an implementation of the Arun's registration method.
-PivotCalibration.py: implementation of EM tracker pivot calibration.
+PivotCalibration.py: implementation of EM tracker pivot calibration, as well as using results from the pivot calibration to calculate the location of the pointer
 OpticalCalibration.py: implementation of optical tracker pivot calibration.
+DistortionCorrection.py: implementation of calculating and correcting Berstein polynomial distortion
 testing.py: script we used to debug our functions using the debug data sets and print error between the two.

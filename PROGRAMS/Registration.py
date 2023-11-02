@@ -3,6 +3,16 @@ from Frame import Frame
 from Point3d import Point3d
 
 def registrationArunMethod(a, b, frame_name):
+    '''
+    Find transformation such that F*a = b
+
+    Parameters:
+    a: point cloud
+    b: point cloud to register a to
+
+    Returns:
+    F: transformation from a to b
+    '''
     at = a.transpose()
     bt = b.transpose()
 

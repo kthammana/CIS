@@ -3,6 +3,19 @@ from Point3d import Point3d
 from Registration import registrationArunMethod
 
 def opticalCalibration(d, D, H):
+    '''
+    Parameters: 
+    H: N_frames x N_H x 3 (N_frames x N_H points)
+        optical trackers on probe
+    D: N_frames x N_H x 3 (N_frames x N_H points)
+        optical trackers on EM tracker base
+    d: N_D x 3 (N_D points)
+        opticals trackers on EM base in EM coordinates
+
+    Return:
+    p_dimple: point of the pivot in optical tracker coordinates
+    '''
+
     # defining local coordinate system
     Ht = H[0].transpose()
     H0 = np.mean(Ht, axis=1).reshape((-1,1))
@@ -13,6 +26,8 @@ def opticalCalibration(d, D, H):
 
         # calculating F_D for each frame
         # to convert from optical tracker to EM coordinates
+        # and creating the [R -I][p_tip p_dimple]^T = [-t] matrix for each frame
+        # to be used for SVD least squares
         F_D = registrationArunMethod(d, D[i], "D")
         F_H = registrationArunMethod(h.transpose(), H[i], "H")
         F_DH = F_D.inverse() * F_H

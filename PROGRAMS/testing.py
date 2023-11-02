@@ -4,7 +4,14 @@ from Registration import registrationArunMethod
 from EMPivotCalibration import pivotCalibration, GtoEM
 from OpticalPivotCalibration import opticalCalibration
 from Point3d import Point3d
-from DistortionCorrection import calcDistortionCorrection, correctDistortion
+from DistortionCorrection import bernstein, calcDistortionCorrection, correctDistortion
+
+def testBernstein():
+    # b_2,5(x) = 10x^2*(1 - x)^3 --> n = 5, k = 2, v = x
+    x = 5
+    expected = 10 * x**2 * (1-x)**3
+    actual = bernstein(5,2,x)
+    print('Bernstein error:',abs(expected-actual))
 
 def testRegistration():
     print("Registration Test:")
@@ -21,13 +28,6 @@ def testRegistration():
     print('Expected R:',artiR)
     print('Calculated p:',artiF_D.p.__str__())
     print('Expected p: 0.3404, 0.5853, 0.2238')
-    # reg_error = 0
-    # for i in range(3):
-    #     temp_point = Point3d("D",F_D.R[i])
-    #     reg_error += temp_point.error(artiR[i])
-    #     # print(i,':',reg_error)
-    # reg_error += artiF_D.p.error([0.3404, 0.5853, 0.2238])
-    # print('Registration error:',reg_error)
 
 def testDistortionReconstructsCexp(dataset):
     print("Distortion Test:")
@@ -73,7 +73,6 @@ def printPA2OutputErrors(dataset):
     C_errors = np.zeros(C.shape[0:2]) # stores error of each frame
     for i in range(C.shape[0]): # N_frames
         for j in range(C.shape[1]): # N_C
-            # P_C = Point3d(C[i][j])
             P_Cexp = Point3d("C", C_exp[i][j])
             C_errors[i][j] = P_Cexp.error(C_expected[i][j])
     print('Average calibration error per point:', np.mean(C_errors), 'mm')

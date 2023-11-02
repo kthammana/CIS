@@ -14,7 +14,7 @@ def bernsteinPolynomialF(N, q, q_min, q_max):
     for i in range(q.shape[0]):
         u[i] = (q[i] - q_min)/diff
 
-    # calculate F values using bernstein polynomials
+    # calculate F values using 3D bernstein polynomials for each point
     F = np.empty((u.shape[0], (N+1)**3))
     for x in range(u.shape[0]):
         index = 0
@@ -37,7 +37,7 @@ def calcDistortionCorrection(p, q, N):
     q_max: upper bound for 3D points of bounding box for scaling
     '''
 
-    # create a bounding box
+    # create a bounding box by finding min and max along every axis
     q_min = np.amin(q, axis=0)
     q_max = np.amax(q, axis=0)
 
@@ -54,35 +54,19 @@ def calcDistortionCorrection(p, q, N):
     return coef, q_min, q_max
 
 def correctDistortion(q, coef, q_min, q_max, N):
+    '''
+    Parameters:
+    q: 3D points read by navigation sensor with distortion
+    coef: distortion correction coef, given by calcDistortionCorrection
+    q_min: minimum of scaling box, given by calcDistortionCorrection
+    q_max: maximum of scaling box, given by calcDistortionCorrection
+
+    Returns:
+    p: undistorted 3D points
+    '''
+
+    # create F matrix of bernstein polynomials and multiply with coef
     F = bernsteinPolynomialF(N, q, q_min, q_max)
     p = F @ coef
 
     return p # return values without distortion
-
-
-# # # TESTING
-# # b_2,5(x) = 10x^2*(1 - x)^3 --> n = 5, k = 2, v = x
-# x = 5
-# expected = 10 * x**2 * (1-x)**3
-# actual = bernstein(5,2,x)
-# print('Bernstein error:',abs(expected-actual))
-
-# # calculating expected Cs
-# d, a, c = read_calbody("PA1 Student Data/pa1-debug-a-calbody.txt")
-# D, A, C = read_calreadings("PA1 Student Data/pa1-debug-a-calreadings.txt")
-# C_expected = np.empty(C.shape)
-# for i in range(D.shape[0]):
-#     F_D = registrationArunMethod(d, D[i], "D")
-#     F_A = registrationArunMethod(a, A[i], "A")
-#     F_DA = F_D.inverse() * F_A
-#     for j in range(c.shape[0]):
-#         C0_exp = np.matmul(F_DA.R, c[j].transpose()[..., np.newaxis]) + F_DA.p.coords.transpose()[..., np.newaxis]
-#         C_expected[i][j] = [C0_exp[0][0], C0_exp[1][0], C0_exp[2][0]]
-
-# coef, q_min, q_max = calcDistortionCorrection(np.vstack(C_expected), np.vstack(C), 3)
-# # print(coef)
-# C_undistorted = correctDistortion(np.vstack(C), coef, q_min, q_max, 3)
-# # print("C_expected: \n")
-# # print(C_expected)
-# # print("C with distortion: \n")
-# # print(C_undistorted)
