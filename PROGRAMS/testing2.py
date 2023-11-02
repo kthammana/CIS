@@ -58,9 +58,8 @@ print('Average calibration error per point:', np.mean(C_errors), 'mm')
     C_errors = np.zeros(C.shape[0:2]) # stores error of each frame
     for i in range(C.shape[0]): # N_frames
         for j in range(C.shape[1]): # N_C
-            # P_C = Point3d(C[i][j])
             P_Cexp = Point3d("C", C_exp[i][j])
-            C_errors[i][j] = P_Cexp.error(C[i][j])
+            C_errors[i][j] = P_Cexp.error(C_expected[i][j])
     print('Average calibration error per point:', np.mean(C_errors), 'mm')
 
     # EM pivot calibration

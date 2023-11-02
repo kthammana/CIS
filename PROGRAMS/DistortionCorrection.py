@@ -60,13 +60,12 @@ def correctDistortion(q, coef, q_min, q_max, N):
     return p # return values without distortion
 
 
-# # TESTING
-
-# b_2,5(x) = 10x^2*(1 - x)^3 --> n = 5, k = 2, v = x
-x = 5
-expected = 10 * x**2 * (1-x)**3
-actual = bernstein(5,2,x)
-print('Bernstein error:',abs(expected-actual))
+# # # TESTING
+# # b_2,5(x) = 10x^2*(1 - x)^3 --> n = 5, k = 2, v = x
+# x = 5
+# expected = 10 * x**2 * (1-x)**3
+# actual = bernstein(5,2,x)
+# print('Bernstein error:',abs(expected-actual))
 
 # # calculating expected Cs
 # d, a, c = read_calbody("PA1 Student Data/pa1-debug-a-calbody.txt")
