@@ -29,5 +29,6 @@ def pivotCalibration(G):
     x = Vt.transpose() @ y
 
     # return p_dimple
-    point = Point3d("EM", x[3][0],x[4][0],x[5][0])
-    return point
+    p_dimple = Point3d("EM", x[3][0],x[4][0],x[5][0])
+    p_tip = Point3d("EM", x[0][0],x[1][0],x[2][0])
+    return p_dimple, p_tip

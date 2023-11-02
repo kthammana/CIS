@@ -24,7 +24,7 @@ print('Average Expected C Error:',error)
 
 # EM pivot calibration
 G = read_empivot("PA1 Student Data/pa1-debug-a-empivot.txt")
-P_em_exp = pivotCalibration(G)
+P_em_exp, P_tip = pivotCalibration(G)
 print('EM Calculated output:', P_em_exp.__str__())
 print('EM Expected output:',P_em)
 print('EM Pivot Error:',P_em_exp.error(P_em),'mm')

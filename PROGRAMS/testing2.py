@@ -5,6 +5,28 @@ from EMPivotCalibration import pivotCalibration
 from OpticalPivotCalibration import opticalCalibration
 from Point3d import Point3d
 from DistortionCorrection import calcDistortionCorrection, correctDistortion
+from StereotacticNav import GtoEM
+
+# ### DEBUGGING REGISTRATION
+# # use given d (from PA1 data set g) and artificial D
+# artiD = np.array([[0.3404, 0.5853, 0.2238],[-100.2885, -80.1432, 76.7532], 
+#               [111.0513, -62.0671, 79.7082],[10.4224, -142.7955, 156.2376],
+#               [11.1531, -109.2218, -101.3906],[-89.4758, -189.9503, -24.8612],
+#               [121.8640, -171.8742, -21.9062],[21.2351, -252.6026, 54.6232]])
+# artiF_D = registrationArunMethod(d, artiD, "D")
+# # artificial R and p calculated on MATLAB
+# artiR = np.array([[0.0721, 0.7381, -0.6709],[-0.7320, -0.4177, -0.5382],[-0.6774, 0.5299, 0.5102]])
+# print('Calculated R:', artiF_D.R)
+# print('Expected R:',artiR)
+# print('Calculated p:',artiF_D.p.__str__())
+# print('Expected p: 0.3404, 0.5853, 0.2238')
+# # reg_error = 0
+# # for i in range(3):
+# #     temp_point = Point3d("D",F_D.R[i])
+# #     reg_error += temp_point.error(artiR[i])
+# #     # print(i,':',reg_error)
+# # reg_error += artiF_D.p.error([0.3404, 0.5853, 0.2238])
+# # print('Registration error:',reg_error)
 
 C_exp,P_em,P_opt = read_output1("PA2 Student Data/pa2-debug-a-output1.txt")
 
@@ -29,34 +51,13 @@ for i in range(C.shape[0]): # N_frames
         C_errors[i][j] = P_Cexp.error(C[i][j])
 print('Average calibration error per point:', np.mean(C_errors), 'mm')
 
-### DEBUGGING REGISTRATION
-# use given d (from PA1 data set g) and artificial D
-artiD = np.array([[0.3404, 0.5853, 0.2238],[-100.2885, -80.1432, 76.7532], 
-              [111.0513, -62.0671, 79.7082],[10.4224, -142.7955, 156.2376],
-              [11.1531, -109.2218, -101.3906],[-89.4758, -189.9503, -24.8612],
-              [121.8640, -171.8742, -21.9062],[21.2351, -252.6026, 54.6232]])
-artiF_D = registrationArunMethod(d, artiD, "D")
-# artificial R and p calculated on MATLAB
-artiR = np.array([[0.0721, 0.7381, -0.6709],[-0.7320, -0.4177, -0.5382],[-0.6774, 0.5299, 0.5102]])
-print('Calculated R:', artiF_D.R)
-print('Expected R:',artiR)
-print('Calculated p:',artiF_D.p.__str__())
-print('Expected p: 0.3404, 0.5853, 0.2238')
-# reg_error = 0
-# for i in range(3):
-#     temp_point = Point3d("D",F_D.R[i])
-#     reg_error += temp_point.error(artiR[i])
-#     # print(i,':',reg_error)
-# reg_error += artiF_D.p.error([0.3404, 0.5853, 0.2238])
-# print('Registration error:',reg_error)
-
 # EM pivot calibration
 G = read_empivot("PA2 Student Data/pa2-debug-a-empivot.txt")
 G_corr = np.empty(G.shape)
 for i in range(G_corr.shape[0]):
     G_corr[i] = correctDistortion(G[i], coef, q_min, q_max, 3)
 # print(G)
-P_em_exp = pivotCalibration(G_corr)
+P_em_exp, P_tip = pivotCalibration(G_corr)
 print('EM Calculated output:', P_em_exp.__str__())
 print('EM Expected output:',P_em)
 print('EM Pivot Error:',P_em_exp.error(P_em),'mm')
@@ -65,24 +66,29 @@ print('EM Pivot Error:',P_em_exp.error(P_em),'mm')
 b = read_ctfiducials("PA2 Student Data/pa2-debug-a-ct-fiducials.txt")
 G_EM = read_emfiducials("PA2 Student Data/pa2-debug-a-em-fiducialss.txt")
 G_EM_corr = np.empty(G_EM.shape)
-b_EM = np.empty(b.shape)
+# b_EM = np.empty(b.shape)
 for i in range(G_EM_corr.shape[0]):
     G_EM_corr[i] = correctDistortion(G_EM[i], coef, q_min, q_max, 3)
-    F_G = registrationArunMethod(b, G_EM_corr[i], "G") # probe to CT fiducial
-    F_G = F_G.inverse()
-    b_EM[i] = F_G.R.dot(P_em_exp.coords) + F_G.p.coords # do i need to inverse the frame?
+    #F_G = registrationArunMethod(b, G_EM_corr[i], "G") # probe to CT fiducial
+    #F_G = F_G.inverse()
+    #b_EM[i] = F_G.R.dot(P_em_exp.coords) + F_G.p.coords # do i need to inverse the frame?
 # print(b_EM)
+B = GtoEM(G_EM_corr, P_tip)
 
 # Calculate F_reg
-F_reg = registrationArunMethod(b, b_EM, "EM")
+# F_reg = registrationArunMethod(b, b_EM, "EM")
+F_reg = registrationArunMethod(B, b, "EM")
 
 # Compute tip location w.r.t. CT image
 G_nav = read_emnav("PA2 Student Data/pa2-debug-a-EM-nav.txt")
 G_nav_corr = np.empty(G_nav.shape)
-v_exp = np.empty([G_nav.shape[0],3])
 for i in range(G_nav_corr.shape[0]):
     G_nav_corr[i] = correctDistortion(G_nav[i], coef, q_min, q_max, 3)
+V = GtoEM(G_nav_corr, P_tip)
+v_exp = np.empty([G_nav.shape[0],3])
+for i in range(V.shape[0]):
     v_exp[i] = F_reg.R.dot(G_nav_corr[0][i]) + F_reg.p.coords
+
 
 # Calculate average v error
 v = read_output2("PA2 Student Data/pa2-debug-a-output2.txt")
