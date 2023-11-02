@@ -55,7 +55,7 @@ def testDistortionReconstructsCexp(dataset):
 
 def printPA2OutputErrors(dataset):
     print("PA2 Output Errors:")
-    C_exp,P_em,P_opt = read_output1(dataset+"-output1.txt")
+    C_exp,P_em,_ = read_output1(dataset+"-output1.txt")
 
     # calculating expected Cs
     d, a, c = read_calbody(dataset+"-calbody.txt")
@@ -70,15 +70,13 @@ def printPA2OutputErrors(dataset):
             C_expected[i][j] = [C0_exp[0][0], C0_exp[1][0], C0_exp[2][0]]
 
     coef, q_min, q_max = calcDistortionCorrection(np.vstack(C_expected), np.vstack(C), 5)
-    # C_errors = np.zeros(C.shape[0:2]) # stores error of each frame
-    C_error = 0
+    C_errors = np.zeros(C.shape[0:2]) # stores error of each frame
     for i in range(C.shape[0]): # N_frames
         for j in range(C.shape[1]): # N_C
             # P_C = Point3d(C[i][j])
             P_Cexp = Point3d("C", C_exp[i][j])
-            # C_errors[i][j] = P_Cexp.error(C[i][j])
-            C_error += P_Cexp.error(C_expected[i][j])
-    print('Average calibration error per point:', C_error/(C_exp.shape[0]*C_exp.shape[1]), 'mm')
+            C_errors[i][j] = P_Cexp.error(C_expected[i][j])
+    print('Average calibration error per point:', np.mean(C_errors), 'mm')
 
     # EM pivot calibration
     G = read_empivot(dataset+"-empivot.txt")
@@ -87,12 +85,6 @@ def printPA2OutputErrors(dataset):
         G_corr[i] = correctDistortion(G[i], coef, q_min, q_max, 5)
     P_em_exp, P_tip, g = pivotCalibration(G_corr)
     print('EM Pivot Error:',P_em_exp.error(P_em),'mm')
-
-    # Optical tracker pivot calibration
-    D,H = read_optpivot(dataset+"-optpivot.txt")
-    d,_,_ = read_calbody(dataset+"-calbody.txt")
-    P_opt_exp = opticalCalibration(d,D,H)
-    print('OPT Pivot Error:',P_opt_exp.error(P_opt),'mm')
 
     # Fiducial point registration
     b = read_ctfiducials(dataset+"-ct-fiducials.txt")
@@ -122,7 +114,6 @@ def printPA2OutputErrors(dataset):
         p_v = Point3d("CT",v[i])
         errors[i] = p_v.error(v_exp[i])
     print('Avg v error:', np.mean(errors))
-
 
 def printPA1OutputErrors(dataset):
     print("PA1 Output Errors:")
@@ -157,8 +148,3 @@ def printPA1OutputErrors(dataset):
     print('OPT Calculated output:', P_opt_exp.__str__())
     print('OPT Expected output:',P_opt)
     print('OPT Pivot Error:',P_opt_exp.error(P_opt),'mm')
-
-# testRegistration()
-# testDistortionReconstructsCexp("PA1 Student Data/pa1-debug-a")
-printPA2OutputErrors("PA2 Student Data/pa2-debug-f")
-# printPA1OutputErrors("PA1 Student Data/pa1-debug-a")
