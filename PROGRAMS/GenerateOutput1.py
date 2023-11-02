@@ -24,6 +24,7 @@ d, a, c = read_calbody(dataset+"-calbody.txt")
 G = read_empivot(dataset+"-empivot.txt")
 D_opt, H = read_optpivot(dataset+"-optpivot.txt")
 D, A, C = read_calreadings(dataset+"-calreadings.txt")
+# C_exp,P_em,P_opt = read_output1(dataset+"-output1.txt")
 
 # output file:
     # N_C , N_frames, NAME-OUTPUT1.TXT
@@ -33,7 +34,6 @@ D, A, C = read_calreadings(dataset+"-calreadings.txt")
 
 # output file name and directory
 f = open("../OUTPUT_PA2/"+filename, "w")
-
 
 # calculating expected Cs
 C_expected = np.zeros(C.shape)
@@ -45,7 +45,7 @@ for i in range(D.shape[0]):
         C0_exp = np.matmul(F_DA.R, c[j].transpose()[..., np.newaxis]) + F_DA.p.coords.transpose()[..., np.newaxis]
         C_expected[i][j] = [C0_exp[0][0], C0_exp[1][0], C0_exp[2][0]]
 
-coef, q_min, q_max = calcDistortionCorrection(np.vstack(C_expected), np.vstack(C), 3)
+coef, q_min, q_max = calcDistortionCorrection(np.vstack(C_expected), np.vstack(C), 5)
 # C_errors = np.zeros(C.shape[0:2]) # stores error of each frame
 # for i in range(C.shape[0]): # N_frames
 #     for j in range(C.shape[1]): # N_C
@@ -57,7 +57,7 @@ coef, q_min, q_max = calcDistortionCorrection(np.vstack(C_expected), np.vstack(C
 G = read_empivot(dataset+"-empivot.txt")
 G_corr = np.empty(G.shape)
 for i in range(G_corr.shape[0]):
-    G_corr[i] = correctDistortion(G[i], coef, q_min, q_max, 3)
+    G_corr[i] = correctDistortion(G[i], coef, q_min, q_max, 5)
 P_em_exp, P_tip, g = pivotCalibration(G_corr)
 # print('EM Pivot Error:',P_em_exp.error(P_em),'mm')
 

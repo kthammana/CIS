@@ -148,15 +148,3 @@ def printPA1OutputErrors(dataset):
     print('OPT Calculated output:', P_opt_exp.__str__())
     print('OPT Expected output:',P_opt)
     print('OPT Pivot Error:',P_opt_exp.error(P_opt),'mm')
-
-<<<<<<< HEAD
-testRegistration()
-testDistortionReconstructsCexp("PA1 Student Data/pa1-debug-a")
-printPA2OutputErrors("PA2 Student Data/pa2-debug-a")
-printPA1OutputErrors("PA1 Student Data/pa1-debug-a")
-=======
-# testRegistration()
-# testDistortionReconstructsCexp("PA1 Student Data/pa1-debug-a")
-printPA2OutputErrors("PA2 Student Data/pa2-debug-f")
-# printPA1OutputErrors("PA1 Student Data/pa1-debug-a")
->>>>>>> f96dce7f96414494aa0fcaaa26fa7649bcdc6d00
