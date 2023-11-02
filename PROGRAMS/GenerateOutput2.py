@@ -17,8 +17,8 @@ cwd = os.getcwd()
 print(cwd)
 
 # change input and output filenames
-dataset = "PA2 Student Data/pa2-unknown-j"
-filename = "pa2-unknown-j-output2.txt"
+dataset = "PA2 Student Data/pa2-debug-f"
+filename = "pa2-debug-f-output2.txt"
 print(filename)
 d, a, c = read_calbody(dataset+"-calbody.txt")
 G = read_empivot(dataset+"-empivot.txt")
@@ -80,12 +80,12 @@ for i in range(V.shape[0]):
 
 # Calculate v_exp and write to output file
 N_frames = G_nav_corr.shape[0]
-f.write(str(N_frames) + ", " + filename + "\n")
-# f.write('N_frames:' + str(N_frames) + ", " + filename + "\n")
+# f.write(str(N_frames) + ", " + filename + "\n")
+f.write(str(N_frames) + ", " + filename+ "\n")
 for i in range(N_frames):
     point = Point3d("EM",v_exp[i])
+    # f.write(point.__str__() + "\n")
     f.write(point.__str__() + "\n")
-    # f.write(point.__str__() + "\\\\" + "\n")
     
 # Calculate average v error
 # v = read_output2(dataset+"-output2.txt")

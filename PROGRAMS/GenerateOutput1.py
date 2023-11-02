@@ -17,8 +17,8 @@ cwd = os.getcwd()
 print(cwd)
 
 # change input and output filenames
-dataset = "PA2 Student Data/pa2-unknown-j"
-filename = "pa2-unknown-j-output1.txt"
+dataset = "PA2 Student Data/pa2-debug-f"
+filename = "pa2-debug-f-output1.txt"
 print(filename)
 d, a, c = read_calbody(dataset+"-calbody.txt")
 G = read_empivot(dataset+"-empivot.txt")
@@ -69,8 +69,8 @@ P_opt_exp = opticalCalibration(d,D_opt,H)
 N_frames = D.shape[0]
 N_C = c.shape[0]
 f.write(str(N_C) + ", " + str(N_frames) + ", " + filename + "\n")
-f.write(P_em_exp.__str__() + "\n")
-f.write(P_opt_exp.__str__() + "\n")
+f.write('EM Pivot Position:' + P_em_exp.__str__() + "\n")
+f.write('OPT Pivot Position:' + P_opt_exp.__str__() + "\n")
 error = 0
 for i in range(N_frames): # N_frames
     for j in range(N_C): # N_C
