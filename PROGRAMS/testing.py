@@ -49,7 +49,6 @@ def testDistortionReconstructsCexp(dataset):
     coef, q_min, q_max = calcDistortionCorrection(C_expected_stacked, C_stacked, 3)
     C_undistorted = correctDistortion(C_stacked, coef, q_min, q_max, 3)
     for i in range(C_stacked.shape[0]): # N_C
-        # P_C = Point3d(C[i][j])
         P_Cexp = Point3d("C", C_expected_stacked[i])
         C_errors[i] = P_Cexp.error(C_undistorted[i])
     print('Average calibration error per point:', np.mean(C_errors), 'mm')
@@ -76,7 +75,7 @@ def printPA2OutputErrors(dataset):
         for j in range(C.shape[1]): # N_C
             # P_C = Point3d(C[i][j])
             P_Cexp = Point3d("C", C_exp[i][j])
-            C_errors[i][j] = P_Cexp.error(C[i][j])
+            C_errors[i][j] = P_Cexp.error(C_expected[i][j])
     print('Average calibration error per point:', np.mean(C_errors), 'mm')
 
     # EM pivot calibration
@@ -152,5 +151,5 @@ def printPA1OutputErrors(dataset):
 
 testRegistration()
 testDistortionReconstructsCexp("PA1 Student Data/pa1-debug-a")
-printPA2OutputErrors("PA2 Student Data/pa2-debug-f")
+printPA2OutputErrors("PA2 Student Data/pa2-debug-a")
 printPA1OutputErrors("PA1 Student Data/pa1-debug-a")

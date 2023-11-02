@@ -30,18 +30,6 @@ from DistortionCorrection import calcDistortionCorrection, correctDistortion
 
 def printPA2OutputErrors(dataset):
 
-<<<<<<< HEAD
-coef, q_min, q_max = calcDistortionCorrection(np.vstack(C_expected), np.vstack(C), 3)
-C_errors = np.zeros(C.shape[0:2]) # stores error of each frame
-for i in range(C.shape[0]): # N_frames
-    for j in range(C.shape[1]): # N_C
-        P_Cexp = Point3d("C", C_exp[i][j])
-        C_errors[i][j] = P_Cexp.error(C_expected[i][j])
-print('Average calibration error per point:', np.mean(C_errors), 'mm')
-=======
-    C_exp,P_em,P_opt = read_output1(dataset+"-output1.txt")
->>>>>>> 1a6b0c8585bdb54b697993c2af8a66a4a7de2a3e
-
     # calculating expected Cs
     d, a, c = read_calbody(dataset+"-calbody.txt")
     D, A, C = read_calreadings(dataset+"-calreadings.txt")
@@ -58,7 +46,7 @@ print('Average calibration error per point:', np.mean(C_errors), 'mm')
     C_errors = np.zeros(C.shape[0:2]) # stores error of each frame
     for i in range(C.shape[0]): # N_frames
         for j in range(C.shape[1]): # N_C
-            P_Cexp = Point3d("C", C_exp[i][j])
+            P_Cexp = Point3d("C", C[i][j])
             C_errors[i][j] = P_Cexp.error(C_expected[i][j])
     print('Average calibration error per point:', np.mean(C_errors), 'mm')
 
