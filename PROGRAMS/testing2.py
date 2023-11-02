@@ -44,7 +44,7 @@ def printPA2OutputErrors(dataset):
             C0_exp = np.matmul(F_DA.R, c[j].transpose()[..., np.newaxis]) + F_DA.p.coords.transpose()[..., np.newaxis]
             C_expected[i][j] = [C0_exp[0][0], C0_exp[1][0], C0_exp[2][0]]
 
-    coef, q_min, q_max = calcDistortionCorrection(np.vstack(C_expected), np.vstack(C), 5)
+    coef, q_min, q_max = calcDistortionCorrection(np.vstack(C_expected), np.vstack(C), 3)
     C_errors = np.zeros(C.shape[0:2]) # stores error of each frame
     for i in range(C.shape[0]): # N_frames
         for j in range(C.shape[1]): # N_C
@@ -56,7 +56,7 @@ def printPA2OutputErrors(dataset):
     G = read_empivot(dataset+"-empivot.txt")
     G_corr = np.empty(G.shape)
     for i in range(G_corr.shape[0]):
-        G_corr[i] = correctDistortion(G[i], coef, q_min, q_max, 5)
+        G_corr[i] = correctDistortion(G[i], coef, q_min, q_max, 3)
     P_em_exp, P_tip, g = pivotCalibration(G_corr)
     print('EM Pivot Error:',P_em_exp.error(P_em),'mm')
 
@@ -65,7 +65,7 @@ def printPA2OutputErrors(dataset):
     G_EM = read_emfiducials(dataset+"-em-fiducialss.txt")
     G_EM_corr = np.empty(G_EM.shape)
     for i in range(G_EM_corr.shape[0]):
-        G_EM_corr[i] = correctDistortion(G_EM[i], coef, q_min, q_max, 5)
+        G_EM_corr[i] = correctDistortion(G_EM[i], coef, q_min, q_max, 3)
     B = GtoEM(G_EM_corr, P_tip, g)
 
     # Calculate F_reg
@@ -75,7 +75,7 @@ def printPA2OutputErrors(dataset):
     G_nav = read_emnav(dataset+"-EM-nav.txt")
     G_nav_corr = np.empty(G_nav.shape)
     for i in range(G_nav_corr.shape[0]):
-        G_nav_corr[i] = correctDistortion(G_nav[i], coef, q_min, q_max, 5)
+        G_nav_corr[i] = correctDistortion(G_nav[i], coef, q_min, q_max, 3)
     V = GtoEM(G_nav_corr, P_tip, g)
     v_exp = np.empty([G_nav.shape[0],3])
     for i in range(V.shape[0]):
@@ -89,4 +89,4 @@ def printPA2OutputErrors(dataset):
         errors[i] = p_v.error(v_exp[i])
     print('Avg v error:', np.mean(errors))
 
-printPA2OutputErrors("PA2 Student Data/pa2-debug-f")
+printPA2OutputErrors("PA2 Student Data/pa2-debug-a")
