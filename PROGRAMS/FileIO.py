@@ -208,3 +208,109 @@ def read_output2(filename):
         point = file.readline().replace("\n","").replace(' ','').split(',')
         v[i] = point
     return v
+
+# ProblemX-BodyY” gives xyz coordinates of rigid body Y's marker LEDs and tip 
+# for problem X w.r.t. body coordinates
+def read_probbody(filename):
+    '''
+    Returns:
+    Y: N_markers x 3 (N_markers points)
+    Marker LEDs in body coordinates
+    t: 1 x 3 (one point)
+    Rigid body's tip in body coordinates
+    
+    Definitions:
+    N_markers = Number of marker LEDs
+
+    '''
+    file = open(filename, 'r')
+    params = file.readline().split(' ')
+    Y = np.empty((int(params[0]), 3))
+    for i in range(int(params[0])):
+        point = file.readline().replace("\n","").replace(' ','').split(',')
+        Y[i] = point
+    t = file.readline().replace("\n","").replace(' ','').split(',')
+    return Y, t
+
+# “ProblemXMesh.sur” defines the body surface mesh
+def read_mesh(filename):
+    '''
+    Returns:
+    V: N_vertices x 3 (N_vertices points)
+        Vertex's coordinates w.r.t. CT coordinates
+    i: N_triangles x 3 (N_triangles points)
+        Vertex indices of the three vertices for each triangle 
+    n: N_triangles x 3 (N_triangles points)
+        Triangle indices for the three neighbor triangles opposite to the 
+        three vertices (“-1” means not a valid neighbor)
+        
+    Definitions:
+    N_vertices = Number of vertices
+    N_triangles = Number of triangles
+
+    '''
+    file = open(filename, 'r')
+    params = file.readline().replace('\n','').split(',')
+    V = np.empty((int(params[0]), 3))
+    for i in range(int(params[0])): # N_vertices
+        point = file.readline().replace("\n","").split(' ')
+        V[i] = point
+    params = file.readline().replace("\n","").replace(' ','').split(',')
+    i = np.empty((int(params[0]), 3))
+    n = np.empty((int(params[0]), 3))
+    for j in range(int(params[0])): # N_triangles
+        point = file.readline().replace("\n","").split(' ')
+        i[j] = point[0:3]
+        n[j] = point[3:6]
+    return V, i, n
+
+# “paV-X-ddddd-SampleReadings.txt” contains the coordinates to all markers in
+# all sample frames for problem V dataset X
+def read_samplereadings(filename):
+   '''
+   Returns:
+   M : N_samps x N_s x 3 (N_samps x N_s points)
+       xyz coordinates of A body, B body, and other (unneeded) LED markers 
+       w.r.t. tracker coordinates
+        
+   Definitions:
+   N_samps = Number of sample frames
+   N_s = Number of LEDs read by the tracker in each sample frame
+
+   '''
+   file = open(filename, 'r')
+   params = file.readline().replace(' ','').split(',') # N_s, N_samps
+   M = np.empty((int(params[1]), int(params[0]), 3))
+   for i in range(int(params[1])): # N_samps
+       for j in range(int(params[0])): # N_s
+           point = file.readline().replace("\n","").replace(' ','').split(',')
+           M[i][j] = point
+   return M
+
+# “pa3-X-Output.txt” contains the coordinates of the pointer tip w.r.t. rigid
+# body B (d_k) and CT coordinates (c_k) for k samples
+def read_output3(filename):
+    '''
+    Returns:
+    d : N_samps x 3 (N_samps points)
+        xyz coordinates of d w.r.t. rigid body B coordinates
+    c : N_samps x 3 (N_samps points)
+        xyz coordinates of c w.r.t. CT coordinates
+    mag : N_samps x 1 (N_samps values)
+        magnitude of difference ( || d_k - c_k || )
+
+    Definitions:
+    N_frames: number of frames of data
+    '''
+    file = open(filename, 'r')
+    params = file.readline().split(' ') # N_samps
+    d = np.empty((int(params[0]), 3))
+    c = np.empty((int(params[0]), 3))
+    mag = np.empty(int(params[0]))
+    for i in range(int(params[0])): # N_samps
+        points = file.readline().replace("\n","").split(' ')
+        filtered = [item for item in points if item != '']
+        d[i] = filtered[0:3]
+        c[i] = filtered[3:6]
+        mag[i] = filtered[6]
+    return d, c, mag

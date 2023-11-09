@@ -1,5 +1,5 @@
 import numpy as np
-from FileIO import read_calbody, read_calreadings, read_empivot, read_optpivot, read_output1, read_ctfiducials, read_emfiducials, read_emnav, read_output2
+from FileIO import read_calbody, read_calreadings, read_empivot, read_optpivot, read_output1, read_ctfiducials, read_emfiducials, read_emnav, read_output2, read_mesh, read_output3, read_samplereadings, read_probbody
 from Registration import registrationArunMethod
 from EMPivotCalibration import pivotCalibration, GtoEM
 from OpticalPivotCalibration import opticalCalibration
@@ -147,3 +147,13 @@ def printPA1OutputErrors(dataset):
     print('OPT Calculated output:', P_opt_exp.__str__())
     print('OPT Expected output:',P_opt)
     print('OPT Pivot Error:',P_opt_exp.error(P_opt),'mm')
+    
+def printPA3OutputErrors(dataset):
+    print("PA3 Output Errors:")
+    
+    # test I/O functions
+    Y_A, t_A = read_probbody("PA345 Student Data/Problem3-BodyA.txt")
+    Y_B, t_B = read_probbody("PA345 Student Data/Problem3-BodyB.txt")
+    V, i, n = read_mesh("PA345 Student Data/Problem3MeshFile.sur")
+    M = read_samplereadings(dataset+"-SampleReadingsTest.txt")
+    d, c, mag = read_output3(dataset+"-Output.txt")
