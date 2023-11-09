@@ -227,6 +227,8 @@ def read_probbody(filename):
     params = file.readline().split(' ')
     Y = np.empty((int(params[0]), 3))
     for i in range(int(params[0])):
+        # I manually added "," into the files for Problem 3 so we will need
+        # to do the same for Problems 4 and 5 for this to work
         point = file.readline().replace("\n","").replace(' ','').split(',')
         Y[i] = point
     t = file.readline().replace("\n","").replace(' ','').split(',')
