@@ -23,5 +23,10 @@ class Mesh(object):
         self.v_inds = v_inds # i
         self.n_inds = n_inds # n
 
+    def getVerticesOfTriangle(self, t_idx):
+        t_v = self.v_inds[t_idx]
+        return [self.v_coors[t_v[0]].transpose(), self.v_coors[t_v[1]].transpose(), self.v_coors[t_v[2]].transpose()]
+    
+
 # can add functions as necessary
 # can change variable names to given V,i,n if that is easier
