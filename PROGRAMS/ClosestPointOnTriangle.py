@@ -1,5 +1,4 @@
 import numpy as np
-from Point3d import Point3d
 
 def projectOnSegment(c, x, y):
     print("closest point on triangle")
@@ -12,11 +11,8 @@ def projectOnSegment(c, x, y):
 def findClosestPointOnTriangle(a, v_coors):
     p, q, r = v_coors
     b = (a - p).transpose()[..., np.newaxis]
-    # print(b.shape)
     A = np.array([q-p, r-p]).transpose()
-    # print(A.shape)
     x = np.linalg.inv(A.transpose() @ A) @ (A.transpose() @ b)
-    # print(x.shape)
     l = x[0][0]
     u = x[1][0]
     c = p + l*(q - p) + u*(r - p)
@@ -32,10 +28,10 @@ def findClosestPointOnTriangle(a, v_coors):
         return projectOnSegment(c, q, r)
 
 
-a = np.array([0,2,0])
+a = np.array([1.75,0.5,1])
 p = np.array([1,0,0])
 q = np.array([2,0,0])
 r = np.array([2,1,0])
 v_coords = np.asarray([p, q, r])
 c = findClosestPointOnTriangle(a, v_coords)
-print(c)
+# print(c)
