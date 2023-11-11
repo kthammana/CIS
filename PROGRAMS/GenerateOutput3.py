@@ -14,5 +14,14 @@ import os
 cwd = os.getcwd()
 print(cwd)
 
-A, A_tip = read_probbody("PA345 Student Data/Problem5-BodyA.txt")
-print(A_tip)
+A, A_tip, N_A = read_probbody("PA345 Student Data/Problem3-BodyA.txt")
+B, B_tip, N_B = read_probbody("PA345 Student Data/Problem3-BodyB.txt")
+
+a, b = read_samplereadings("PA345 Student Data/PA3-A-Debug-SampleReadingsTest.txt", N_A, N_B)
+
+for i in range(a.shape[0]): # N_samples:
+    F_A = registrationArunMethod(a, A, "A")
+    F_B = registrationArunMethod(b, B, "B")
+    F_BA = F_B.inverse() * F_A
+    d_k = F_BA.R * A_tip + F_BA.p.coords
+    print(d_k)

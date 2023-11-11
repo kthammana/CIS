@@ -218,6 +218,7 @@ def read_probbody(filename):
     Marker LEDs in body coordinates
     t: 1 x 3 (one point)
     Rigid body's tip in body coordinates
+    N: N_markers
     
     Definitions:
     N_markers = Number of marker LEDs
@@ -225,13 +226,14 @@ def read_probbody(filename):
     '''
     file = open(filename, 'r')
     params = file.readline().split(' ')
-    Y = np.empty((int(params[0]), 3))
-    for i in range(int(params[0])):
+    N = int(params[0])
+    Y = np.empty((N, 3))
+    for i in range(N):
         point = file.readline().replace("\n","").split()
         Y[i] = point
     t = np.empty((1,3))
     t[0] = file.readline().replace("\n","").split()
-    return Y, t
+    return Y, t, N
 
 # “ProblemXMesh.sur” defines the body surface mesh
 def read_mesh(filename):
@@ -267,26 +269,60 @@ def read_mesh(filename):
 
 # “paV-X-ddddd-SampleReadings.txt” contains the coordinates to all markers in
 # all sample frames for problem V dataset X
-def read_samplereadings(filename):
-   '''
-   Returns:
-   M : N_samps x N_s x 3 (N_samps x N_s points)
-       xyz coordinates of A body, B body, and other (unneeded) LED markers 
-       w.r.t. tracker coordinates
+# def read_samplereadings(filename):
+#    '''
+#    Returns:
+#    M : N_samps x N_s x 3 (N_samps x N_s points)
+#        xyz coordinates of A body, B body, and other (unneeded) LED markers 
+#        w.r.t. tracker coordinates
         
-   Definitions:
-   N_samps = Number of sample frames
-   N_s = Number of LEDs read by the tracker in each sample frame
+#    Definitions:
+#    N_samps = Number of sample frames
+#    N_s = Number of LEDs read by the tracker in each sample frame
 
-   '''
-   file = open(filename, 'r')
-   params = file.readline().replace(' ','').split(',') # N_s, N_samps
-   M = np.empty((int(params[1]), int(params[0]), 3))
-   for i in range(int(params[1])): # N_samps
-       for j in range(int(params[0])): # N_s
-           point = file.readline().replace("\n","").replace(' ','').split(',')
-           M[i][j] = point
-   return M
+#    '''
+#    file = open(filename, 'r')
+#    params = file.readline().replace(' ','').split(',') # N_s, N_samps
+#    M = np.empty((int(params[1]), int(params[0]), 3))
+#    for i in range(int(params[1])): # N_samps
+#        for j in range(int(params[0])): # N_s
+#            point = file.readline().replace("\n","").replace(' ','').split(',')
+#            M[i][j] = point
+#    return M
+
+# “paV-X-ddddd-SampleReadings.txt” contains the coordinates to all markers in
+# all sample frames for problem V dataset X
+def read_samplereadings(filename, N_A, N_B):
+    '''
+    Returns:
+    a : N_samps x N_A x 3 (N_samps x N_s points)
+        xyz coordinates of A body w.r.t. tracker coordinates for N_s samples
+    b : N_samps x N_B x 3 (N_samps x N_s points)
+        xyz coordinates of B body w.r.t. tracker coordinates for N_s samples
+            
+    Definitions:
+    N_samps = Number of sample frames
+    N_s = Number of LEDs read by the tracker in each sample frame
+    N_A = number of A trackers
+    N_B = number of B trackers
+
+    '''
+    file = open(filename, 'r')
+    params = file.readline().replace(' ','').split(',') # N_s, N_samps
+    M = np.empty((int(params[1]), int(params[0]), 3))
+    a = np.empty((int(params[1]), N_A, 3))
+    b = np.empty((int(params[1]), N_B, 3))
+    N_D = int(params[0]) - N_A - N_B
+    for i in range(int(params[1])): # N_samps
+        for j in range(N_A): # N_s
+            point = file.readline().replace("\n","").replace(' ','').split(',')
+            a[i][j] = point
+        for j in range(N_B): # N_s
+            point = file.readline().replace("\n","").replace(' ','').split(',')
+            b[i][j] = point
+        for j in range(N_D): # N_s
+            file.readline().replace("\n","").replace(' ','').split(',')
+    return a, b
 
 # “pa3-X-Output.txt” contains the coordinates of the pointer tip w.r.t. rigid
 # body B (d_k) and CT coordinates (c_k) for k samples
