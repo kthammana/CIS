@@ -25,7 +25,7 @@ class Mesh(object):
 
     def getVerticesOfTriangle(self, t_idx):
         t_v = self.v_inds[t_idx]
-        return [self.v_coors[t_v[0]].transpose(), self.v_coors[t_v[1]].transpose(), self.v_coors[t_v[2]].transpose()]
+        return [self.v_coors[int(t_v[0])].transpose(), self.v_coors[int(t_v[1])].transpose(), self.v_coors[int(t_v[2])].transpose()]
     
 
 # can add functions as necessary

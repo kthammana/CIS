@@ -1,7 +1,7 @@
 import numpy as np
 
 def projectOnSegment(c, x, y):
-    print("closest point on triangle")
+    # print("closest point on triangle")
     c = c.transpose()
     l = (((c - x).dot(y - x))/((y - x).dot(y - x)))[0]
     l_seg = max(0, min(l, 1))
@@ -18,8 +18,8 @@ def findClosestPointOnTriangle(a, v_coors):
     c = p + l*(q - p) + u*(r - p)
     c = c.transpose()[..., np.newaxis]
     if l >= 0 and u >= 0 and l + u <= 1:
-        print("closest point in triangle")
-        return c
+        # print("closest point in triangle")
+        return c[:,0]
     elif l < 0:
         return projectOnSegment(c, r, p)
     elif u < 0:

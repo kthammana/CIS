@@ -1,10 +1,13 @@
 import numpy as np
-from FileIO import read_calbody, read_calreadings, read_empivot, read_optpivot, read_output1, read_ctfiducials, read_emfiducials, read_emnav, read_output2, read_mesh, read_output3, read_samplereadings, read_probbody
+from FileIO import read_calbody, read_calreadings, read_empivot, read_optpivot, read_output1, read_ctfiducials 
+from FileIO import read_emfiducials, read_emnav, read_output2, read_mesh, read_output3, read_samplereadings, read_probbody
 from Registration import registrationArunMethod
 from EMPivotCalibration import pivotCalibration, GtoEM
 from OpticalPivotCalibration import opticalCalibration
 from Point3d import Point3d
 from DistortionCorrection import bernstein, calcDistortionCorrection, correctDistortion
+from ClosestPointOnTriangle import findClosestPointOnTriangle
+from Mesh import Mesh
 
 def testBernstein():
     # b_2,5(x) = 10x^2*(1 - x)^3 --> n = 5, k = 2, v = x
@@ -147,13 +150,56 @@ def printPA1OutputErrors(dataset):
     print('OPT Calculated output:', P_opt_exp.__str__())
     print('OPT Expected output:',P_opt)
     print('OPT Pivot Error:',P_opt_exp.error(P_opt),'mm')
+
+def calcDistance(x, y):
+    return np.sqrt((x[0] - y[0])**2 + (x[1] - y[1])**2 + (x[2] - y[2])**2)
     
 def printPA3OutputErrors(dataset):
     print("PA3 Output Errors:")
     
     # test I/O functions
-    Y_A, t_A = read_probbody("PA345 Student Data/Problem3-BodyA.txt")
-    Y_B, t_B = read_probbody("PA345 Student Data/Problem3-BodyB.txt")
-    V, i, n = read_mesh("PA345 Student Data/Problem3MeshFile.sur")
-    M = read_samplereadings(dataset+"-SampleReadingsTest.txt")
-    d, c, mag = read_output3(dataset+"-Output.txt")
+    A, A_tip, N_A = read_probbody("PA345 Student Data/Problem3-BodyA.txt")
+    B, B_tip, N_B = read_probbody("PA345 Student Data/Problem3-BodyB.txt")
+    V, ind, n = read_mesh("PA345 Student Data/Problem3MeshFile.sur")
+    mesh = Mesh(V, ind, n)
+    a, b = read_samplereadings(dataset+"-SampleReadingsTest.txt", N_A, N_B)
+    d_exp, c_exp, mag = read_output3(dataset+"-Output.txt")
+    d_error = 0
+    c_error = 0
+    mag_error = 0
+
+    d_k = np.empty((a.shape[0], 3))
+    # print(d_k.shape)
+    A_tip = A_tip.transpose()[..., np.newaxis]
+    # print(A_tip.shape)
+    for i in range(a.shape[0]): # N_samples:
+        F_Ai = registrationArunMethod(A, a[i], "A")
+        F_Bi = registrationArunMethod(B, b[i], "B")
+        F_BA = F_Bi.inverse() * F_Ai
+        d_k[i] = (F_BA.R @ A_tip)[:,0] + F_BA.p.coords
+        d_error += calcDistance(d_exp[i], d_k[i])
+    # print(d_k)
+
+    # for PA3, F_reg = 1
+    # TO-DO: construct octree/kdtree for searching for points
+    # linear search to find the closest points to d_k
+    c_k = np.empty((a.shape[0], 3))
+    for i in range(d_k.shape[0]):
+        shortest_dist = np.infty
+        for j in range(ind.shape[0]):
+            c = findClosestPointOnTriangle(d_k[i], mesh.getVerticesOfTriangle(j))
+            dist = calcDistance(d_k[i], c)
+            if dist <= shortest_dist:
+                closest_point = c
+                shortest_dist = dist
+        c_k[i] = closest_point
+        c_error += calcDistance(c_exp[i], c_k[i])
+        mag_error += (np.abs(mag[i]-shortest_dist))
+    #print(c_k)
+
+    print("d_k error: ", d_error/d_k.shape[0])
+    print("c_k error: ", c_error/c_k.shape[0])
+    print("mag error: ", mag_error/c_k.shape[0])
+
+
+printPA3OutputErrors("PA345 Student Data/PA3-F-Debug")

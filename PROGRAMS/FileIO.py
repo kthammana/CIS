@@ -233,7 +233,7 @@ def read_probbody(filename):
         Y[i] = point
     t = np.empty((1,3))
     t[0] = file.readline().replace("\n","").split()
-    return Y, t, N
+    return Y, t[0], N
 
 # “ProblemXMesh.sur” defines the body surface mesh
 def read_mesh(filename):
