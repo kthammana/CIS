@@ -1,4 +1,10 @@
 import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+from FileIO import read_mesh, read_output3, read_samplereadings, read_probbody
+from Registration import registrationArunMethod
+from ClosestPointOnTriangle import findClosestPointOnTriangle
 
 class Mesh(object):
     
@@ -108,25 +114,97 @@ def search(root, point):
 	# Pass current depth as 0
 	return searchRec(root, point, 0)
 
-# Driver program to test above functions
+def plot_kd_tree_3d(node, ax, xmin, xmax, ymin, ymax, zmin, zmax, depth=0):
+    if node is not None:
+        cd = depth % k
+
+        if cd == 0:
+            ax.plot([node.point[0], node.point[0]], [ymin, ymax], [zmin, zmax], color='black', linestyle='-', linewidth=1)
+            plot_kd_tree_3d(node.left, ax, xmin, node.point[0], ymin, ymax, zmin, zmax, depth + 1)
+            plot_kd_tree_3d(node.right, ax, node.point[0], xmax, ymin, ymax, zmin, zmax, depth + 1)
+        elif cd == 1:
+            ax.plot([xmin, xmax], [node.point[1], node.point[1]], [zmin, zmax], color='black', linestyle='-', linewidth=1)
+            plot_kd_tree_3d(node.left, ax, xmin, xmax, ymin, node.point[1], zmin, zmax, depth + 1)
+            plot_kd_tree_3d(node.right, ax, xmin, xmax, node.point[1], ymax, zmin, zmax, depth + 1)
+        else:
+            ax.plot([xmin, xmax], [ymin, ymax], [node.point[2], node.point[2]], color='black', linestyle='-', linewidth=1)
+            plot_kd_tree_3d(node.left, ax, xmin, xmax, ymin, ymax, zmin, node.point[2], depth + 1)
+            plot_kd_tree_3d(node.right, ax, xmin, xmax, ymin, ymax, node.point[2], zmax, depth + 1)
+
+
+def plot_points_3d(ax, points):
+    points = np.array(points)
+    ax.scatter(points[:, 0], points[:, 1], points[:, 2], color='red', marker='o', label='Points')
+
+def main():
+    points = [[3, 6, 1], [17, 15, 0], [13, 15, 6], [6, 12, 4], [9, 1, 2], [2, 7, 3], [10, 19, 5]]
+    root = None
+
+    for point in points:
+        root = insertRec(root, point, 0)
+
+    xmin, xmax = min(p[0] for p in points) - 1, max(p[0] for p in points) + 1
+    ymin, ymax = min(p[1] for p in points) - 1, max(p[1] for p in points) + 1
+    zmin, zmax = min(p[2] for p in points) - 1, max(p[2] for p in points) + 1
+
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    plot_kd_tree_3d(root, ax, xmin, xmax, ymin, ymax, zmin, zmax)
+    plot_points_3d(ax, points)
+
+    ax.set_xlabel('X-axis')
+    ax.set_ylabel('Y-axis')
+    ax.set_zlabel('Z-axis')
+    ax.set_title('3D k-d Tree Visualization')
+    ax.legend()
+    plt.show()
+
+def calcDistance(x, y):
+    return np.sqrt((x[0] - y[0])**2 + (x[1] - y[1])**2 + (x[2] - y[2])**2)
+
 if __name__ == '__main__':
-	root = None
-	points = [[3, 6, 1], [17, 15, 0], [13, 15, 6], [6, 12, 4], [9, 1, 2], [2, 7, 3], [10, 19, 5]]
+    main()
+    print("PA3 Output Errors:")
+    
+    dataset = "PA345 Student Data/PA3-F-Debug"
+    
+    # test I/O functions
+    A, A_tip, N_A = read_probbody("PA345 Student Data/Problem3-BodyA.txt")
+    B, B_tip, N_B = read_probbody("PA345 Student Data/Problem3-BodyB.txt")
+    V, ind, n = read_mesh("PA345 Student Data/Problem3MeshFile.sur")
+    mesh = Mesh(V, ind, n)
+    a, b = read_samplereadings(dataset+"-SampleReadingsTest.txt", N_A, N_B)
+    d_exp, c_exp, mag = read_output3(dataset+"-Output.txt")
+    d_error = 0
+    c_error = 0
+    mag_error = 0
 
-	n = len(points)
+    d_k = np.empty((a.shape[0], 3))
+    A_tip = A_tip.transpose()[..., np.newaxis]
+    for i in range(a.shape[0]): # N_samples:
+        F_Ai = registrationArunMethod(A, a[i], "A")
+        F_Bi = registrationArunMethod(B, b[i], "B")
+        F_BA = F_Bi.inverse() * F_Ai
+        d_k[i] = (F_BA.R @ A_tip)[:,0] + F_BA.p.coords
+        d_error += calcDistance(d_exp[i], d_k[i])
 
-	for i in range(n):
-		root = insert(root, points[i])
+    # for PA3, F_reg = 1
+    # TO-DO: construct octree/kdtree for searching for points
+    # linear search to find the closest points to d_k
+    c_k = np.empty((a.shape[0], 3))
+    for i in range(d_k.shape[0]):
+        shortest_dist = np.infty
+        for j in range(ind.shape[0]):
+            c = findClosestPointOnTriangle(d_k[i], mesh.getVerticesOfTriangle(j))
+            dist = calcDistance(d_k[i], c)
+            if dist <= shortest_dist:
+                closest_point = c
+                shortest_dist = dist
+        c_k[i] = closest_point
+        c_error += calcDistance(c_exp[i], c_k[i])
+        mag_error += (np.abs(mag[i]-shortest_dist))
 
-	point1 = [10, 19, 5]
-	if search(root, point1):
-		print("Found")
-	else:
-		print("Not Found")
-
-	point2 = [12, 19, 5]
-	if search(root, point2):
-		print("Found")
-	else:
-		print("Not Found")
-
+    print("d_k error: ", d_error/d_k.shape[0])
+    print("c_k error: ", c_error/c_k.shape[0])
+    print("mag error: ", mag_error/c_k.shape[0])
