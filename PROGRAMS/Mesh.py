@@ -61,24 +61,25 @@ from the triangle, rather than distance from the centroid.
 '''
 # A structure to represent node of kd tree
 class Node:
-	def __init__(self, point, triangle):
+	def __init__(self, point, triangle, idx):
             self.point = point # centroid of triangle
             self.triangle = triangle
             self.left = None
             self.right = None
+            self.idx = idx
 
 # Inserts a new node and returns root of modified tree
 # The parameter depth is used to decide axis of comparison
-def insert(root, point, triangle, depth):
+def insert(root, point, triangle, depth, idx):
     if not root: # Empty tree
-        return Node(point, triangle)
+        return Node(point, triangle, idx)
 
     cd = depth % k
 
     if point[cd] < root.point[cd]:
-        root.left = insert(root.left, point, triangle, depth + 1)
+        root.left = insert(root.left, point, triangle, depth + 1, idx)
     else:
-        root.right = insert(root.right, point, triangle, depth + 1)
+        root.right = insert(root.right, point, triangle, depth + 1, idx)
 
     return root
 
@@ -153,13 +154,14 @@ if __name__ == '__main__':
     # Run time should now be O(n) instead of O(n^2)
     for i in range(ind.shape[0]):
         verts = mesh.getVerticesOfTriangle(i)
-        root = insert(root, mesh.calcCentroid(verts), verts, 0)
+        root = insert(root, mesh.calcCentroid(verts), verts, 0, i)
     
     c_k = np.empty((a.shape[0], 3))
     for i in range(d_k.shape[0]):
         nearest_node = search(root, d_k[i])
         c_k[i] = findClosestPointOnTriangle(d_k[i], nearest_node.triangle)
         shortest_dist = calcDistance(d_k[i], c_k[i])
+        # print(nearest_node.idx)
         c_error += calcDistance(c_exp[i], c_k[i])
         mag_error += (np.abs(mag[i]-shortest_dist))
     
