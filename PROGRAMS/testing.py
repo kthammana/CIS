@@ -268,6 +268,5 @@ def printPA3OutputErrorsOptimizedICP(dataset):
     print("c_k error: ", c_error/c_k.shape[0])
     print("mag error: ", mag_error/c_k.shape[0])
 
-
-printPA3OutputErrorsLinearICP("PA345 Student Data/PA3-F-Debug")
-printPA3OutputErrorsOptimizedICP("PA345 Student Data/PA3-F-Debug")
+# printPA3OutputErrorsLinearICP("PA345 Student Data/PA3-F-Debug")
+# printPA3OutputErrorsOptimizedICP("PA345 Student Data/PA3-F-Debug")
