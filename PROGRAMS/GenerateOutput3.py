@@ -18,7 +18,7 @@ print(cwd)
 
 # change input and output filenames
 dataset = "PA345 Student Data/PA3-K-Unknown"
-output_filename = "pa3-K-Output.txt"
+output_filename = "PA3-K-Unknown-Output.txt"
 
 f = open("../OUTPUT_PA3/"+output_filename, "w")
 
@@ -35,7 +35,7 @@ for i in range(a.shape[0]): # N_samples:
     F_BA = F_Bi.inverse() * F_Ai
     d_k[i] = (F_BA.R @ A_tip)[:,0] + F_BA.p.coords
     
-f.write(str(a.shape[0]) + ", " + output_filename+ "\n") # first line of file
+f.write(str(a.shape[0]) + " " + output_filename+ "\n") # first line of file
 
 # Construct KD tree
 V, ind, n = read_mesh("PA345 Student Data/Problem3MeshFile.sur")
@@ -54,4 +54,6 @@ for i in range(d_k.shape[0]):
     mag[i] = calcDistance(d_k[i], c_k[i])
     point_d = Point3d("",d_k[i])
     point_c = Point3d("",c_k[i])
-    f.write(point_d.__str__() + " " + point_c.__str__() + " " + str(mag[i]) + "\n")
+    string = point_d.__str__() + "     " + point_c.__str__()
+    string += "     {:.3f}".format(round(mag[i], 3))
+    f.write(string + "\n")

@@ -58,8 +58,11 @@ class Point3d(object):
             return self.frame
 
     def __str__(self):
-        return "  {:.2f},   {:.2f},   {:.2f}".format(round(self.x, 2), round(self.y, 2), round(self.z, 2))
-
+        string = "  {0:6.2f}".format(round(self.x, 2))
+        string += "   {0:6.2f}".format(round(self.y, 2))
+        string += "   {0:6.2f}".format(round(self.z, 2))
+        return string
+    
     def __add__(self, other):
         try:
             assert isinstance(other, Point3d)
