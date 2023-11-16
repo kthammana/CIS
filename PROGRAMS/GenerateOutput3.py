@@ -20,7 +20,7 @@ print(cwd)
 dataset = "PA345 Student Data/PA3-K-Unknown"
 output_filename = "PA3-K-Unknown-Output.txt"
 
-f = open("../OUTPUT_PA3/"+output_filename, "w")
+f = open("../OUTPUT/"+output_filename, "w")
 
 A, A_tip, N_A = read_probbody("PA345 Student Data/Problem3-BodyA.txt")
 B, B_tip, N_B = read_probbody("PA345 Student Data/Problem3-BodyB.txt")

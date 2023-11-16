@@ -74,6 +74,7 @@ def testKDTree():
     print('Correct answer: [13, 15, 6]')
     
 def testClosestPoint():
+    print("Test 1: Closest Point in Triangle")
     a = np.array([1.75,0.5,1])
     p = np.array([1,0,0])
     q = np.array([2,0,0])
@@ -82,6 +83,36 @@ def testClosestPoint():
     c = findClosestPointOnTriangle(a, v_coords)
     print('Closest Point:', c)
     print('Correct answer: [1.75, 0.5, 0.]')
+
+    print("Test 2: Closest Point on Edge 1")
+    a = np.array([0,2,0.5])
+    p = np.array([1,0,0])
+    q = np.array([2,0,0])
+    r = np.array([2,1,0])
+    v_coords = np.asarray([p, q, r])
+    c = findClosestPointOnTriangle(a, v_coords)
+    print('Closest Point:', c)
+    print('Correct answer: [1.5, 0.5, 0.]')
+
+    print("Test 3: Closest Point on Edge 2")
+    a = np.array([1.75,-0.5,1])
+    p = np.array([1,0,0])
+    q = np.array([2,0,0])
+    r = np.array([2,1,0])
+    v_coords = np.asarray([p, q, r])
+    c = findClosestPointOnTriangle(a, v_coords)
+    print('Closest Point:', c)
+    print('Correct answer: [1.75, 0, 0.]')
+
+    print("Test 4: Closest Point on Edge 3")
+    a = np.array([3,0.5,-0.5])
+    p = np.array([1,0,0])
+    q = np.array([2,0,0])
+    r = np.array([2,1,0])
+    v_coords = np.asarray([p, q, r])
+    c = findClosestPointOnTriangle(a, v_coords)
+    print('Closest Point:', c)
+    print('Correct answer: [2, 0.5, 0.]')
 
 def printPA2OutputErrors(dataset):
     print("PA2 Output Errors:")
@@ -278,5 +309,4 @@ def printPA3OutputErrorsOptimizedICP(dataset):
     print("c_k error: ", c_error/c_k.shape[0])
     print("mag error: ", mag_error/c_k.shape[0])
 
-# printPA3OutputErrorsLinearICP("PA345 Student Data/PA3-F-Debug")
-# printPA3OutputErrorsOptimizedICP("PA345 Student Data/PA3-A-Debug")
+testClosestPoint()
