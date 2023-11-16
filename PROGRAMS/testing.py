@@ -72,6 +72,16 @@ def testKDTree():
     else:
         print("Tree is empty.")
     print('Correct answer: [13, 15, 6]')
+    
+def testClosestPoint():
+    a = np.array([1.75,0.5,1])
+    p = np.array([1,0,0])
+    q = np.array([2,0,0])
+    r = np.array([2,1,0])
+    v_coords = np.asarray([p, q, r])
+    c = findClosestPointOnTriangle(a, v_coords)
+    print('Closest Point:', c)
+    print('Correct answer: [1.75, 0.5, 0.]')
 
 def printPA2OutputErrors(dataset):
     print("PA2 Output Errors:")
@@ -201,14 +211,14 @@ def printPA3OutputErrorsLinearICP(dataset):
     c_k = np.empty((a.shape[0], 3))
     for i in range(d_k.shape[0]):
         shortest_dist = np.infty
-        shortest_j = -1
+        # shortest_j = -1
         for j in range(ind.shape[0]):
             c = findClosestPointOnTriangle(d_k[i], mesh.getVerticesOfTriangle(j))
             dist = calcDistance(d_k[i], c)
             if dist <= shortest_dist:
                 closest_point = c
                 shortest_dist = dist
-                shortest_j = j
+                # shortest_j = j
         # print(shortest_j)
         c_k[i] = closest_point
         c_error += calcDistance(c_exp[i], c_k[i])

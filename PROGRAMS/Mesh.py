@@ -25,10 +25,37 @@ class Mesh(object):
         self.n_inds = n_inds # n
 
     def getVerticesOfTriangle(self, t_idx):
+        '''
+
+        Parameters
+        ----------
+        t_idx : INTEGER
+            triangle's index.
+
+        Returns
+        -------
+        list
+            Each item in the list is one of the 3 vertices of the triangle. 
+            Each vertex is its own 1x3 array of xyz coordinates.
+
+        '''
         t_v = self.v_inds[t_idx]
         return [self.v_coors[int(t_v[0])].transpose(), self.v_coors[int(t_v[1])].transpose(), self.v_coors[int(t_v[2])].transpose()]
     
     def calcCentroid(self, vertices):
+        '''
+
+        Parameters
+        ----------
+        vertices : list of 3 1x3 arrays
+            3 vertices of the triangle, as outputted by getVerticesOfTriangle().
+
+        Returns
+        -------
+        1x3 array
+            xyz coordinates of the centroid of the provided ttriangle vertices.
+
+        '''
         x = 0
         y = 0
         z = 0
@@ -68,9 +95,9 @@ class Node:
 # The parameter depth is used to decide axis of comparison
 def insert(root, point, triangle, depth, idx):
     if not root: # Empty tree
-        return Node(point, triangle, idx)
+        return Node(point, triangle, idx) # Create root
 
-    cd = depth % k
+    cd = depth % k # current (axis) dimension
 
     if point[cd] < root.point[cd]:
         root.left = insert(root.left, point, triangle, depth + 1, idx)
@@ -89,27 +116,26 @@ def searchTree(root, point, depth, best_node, best_distance):
         return best_node, best_distance
 
     cd = depth % k
-    next_best = best_node # None
-    next_best_distance = best_distance
 
-    if point[cd] < root.point[cd]:
-        next_best, next_best_distance = searchTree(root.left, point, depth + 1, next_best, next_best_distance)
-    else:
-        next_best, next_best_distance = searchTree(root.right, point, depth + 1, next_best, next_best_distance)
+    if point[cd] < root.point[cd]: # if < root at current dimension
+        best_node, best_distance = searchTree(root.left, point, depth + 1, best_node, best_distance)
+    else: # if >= root at current dimension
+        best_node, best_distance = searchTree(root.right, point, depth + 1, best_node, best_distance)
 
     current_distance = distance_squared(root.point, point)
 
-    if current_distance < next_best_distance:
-        next_best = root
-        next_best_distance = current_distance
-
+    if current_distance < best_distance: # update params if closer node is found
+        best_node = root
+        best_distance = current_distance
+    
+    # verify that we made the right tree traversal decision, otherwise update
     other_child = root.right if (point[cd] < root.point[cd]) else root.left
     if other_child:
         other_child_distance = (point[cd] - root.point[cd]) ** 2
-        if other_child_distance < next_best_distance:
-            next_best, next_best_distance = searchTree(other_child, point, depth + 1, next_best, next_best_distance)
+        if other_child_distance < best_distance:
+            best_node, best_distance = searchTree(other_child, point, depth + 1, best_node, best_distance)
 
-    return next_best, next_best_distance
+    return best_node, best_distance
 
 # Returns nearest node to given point in root's tree 
 def search(root, point):

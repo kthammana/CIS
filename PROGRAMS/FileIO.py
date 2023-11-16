@@ -269,29 +269,6 @@ def read_mesh(filename):
 
 # “paV-X-ddddd-SampleReadings.txt” contains the coordinates to all markers in
 # all sample frames for problem V dataset X
-# def read_samplereadings(filename):
-#    '''
-#    Returns:
-#    M : N_samps x N_s x 3 (N_samps x N_s points)
-#        xyz coordinates of A body, B body, and other (unneeded) LED markers 
-#        w.r.t. tracker coordinates
-        
-#    Definitions:
-#    N_samps = Number of sample frames
-#    N_s = Number of LEDs read by the tracker in each sample frame
-
-#    '''
-#    file = open(filename, 'r')
-#    params = file.readline().replace(' ','').split(',') # N_s, N_samps
-#    M = np.empty((int(params[1]), int(params[0]), 3))
-#    for i in range(int(params[1])): # N_samps
-#        for j in range(int(params[0])): # N_s
-#            point = file.readline().replace("\n","").replace(' ','').split(',')
-#            M[i][j] = point
-#    return M
-
-# “paV-X-ddddd-SampleReadings.txt” contains the coordinates to all markers in
-# all sample frames for problem V dataset X
 def read_samplereadings(filename, N_A, N_B):
     '''
     Returns:
@@ -309,7 +286,6 @@ def read_samplereadings(filename, N_A, N_B):
     '''
     file = open(filename, 'r')
     params = file.readline().replace(' ','').split(',') # N_s, N_samps
-    M = np.empty((int(params[1]), int(params[0]), 3))
     a = np.empty((int(params[1]), N_A, 3))
     b = np.empty((int(params[1]), N_B, 3))
     N_D = int(params[0]) - N_A - N_B

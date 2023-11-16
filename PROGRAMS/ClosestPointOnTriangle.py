@@ -1,5 +1,7 @@
 import numpy as np
 
+# Helper function for findClosestPointOnTriangle(...)
+# Returns closest point (c) on the line segment between x and y
 def projectOnSegment(c, x, y):
     # print("closest point on triangle")
     c = c.transpose()
@@ -9,6 +11,21 @@ def projectOnSegment(c, x, y):
     return c
 
 def findClosestPointOnTriangle(a, v_coors):
+    '''
+
+    Parameters
+    ----------
+    a : N_samps x N_A x 3 (N_samps x N_s points)
+        xyz coordinates of A body w.r.t. tracker coordinates for N_s samples
+    v_coors : NumPy array (N_vertices x 3)
+        Coordinates of the triangles' vertices
+
+    Returns
+    -------
+    NumPy array (1 x 3)
+        xyz coordinates of the closest point on the given triangle.
+
+    '''
     p, q, r = v_coors
     b = (a - p).transpose()[..., np.newaxis]
     A = np.array([q-p, r-p]).transpose()
@@ -26,12 +43,3 @@ def findClosestPointOnTriangle(a, v_coors):
         return projectOnSegment(c, p, q)
     elif l + u > 0:
         return projectOnSegment(c, q, r)
-
-
-a = np.array([1.75,0.5,1])
-p = np.array([1,0,0])
-q = np.array([2,0,0])
-r = np.array([2,1,0])
-v_coords = np.asarray([p, q, r])
-c = findClosestPointOnTriangle(a, v_coords)
-# print(c)
