@@ -56,6 +56,22 @@ def testDistortionReconstructsCexp(dataset):
         P_Cexp = Point3d("C", C_expected_stacked[i])
         C_errors[i] = P_Cexp.error(C_undistorted[i])
     print('Average calibration error per point:', np.mean(C_errors), 'mm')
+    
+def testKDTree():
+    points = [[3, 6, 1], [17, 15, 0], [13, 15, 6], [6, 12, 4], [9, 1, 2], [2, 7, 3], [10, 19, 5]]
+    root = None
+
+    for point in points:
+        root = insert(root, point, 0, 0, 0)
+
+    point = [12, 10, 5]
+    nearest_node = search(root, point)
+
+    if nearest_node:
+        print("Nearest node:", nearest_node.point)
+    else:
+        print("Tree is empty.")
+    print('Correct answer: [13, 15, 6]')
 
 def printPA2OutputErrors(dataset):
     print("PA2 Output Errors:")
