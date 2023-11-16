@@ -1,10 +1,10 @@
-# CIS PA#1-2
+# CIS PA#3
 Kiana Bronder, kbronde1
 Keerthana Thammana, lthamma1
 
 ## Executable
-Filename: GenerateOutputPA1.py, GenerateOutputPA2.py
-Instructions: change input and output file names as necessary for the correct dataset. Make sure you are in the PROGRAMS directory. GenerateOutputPA1.py creates the output1 file containing EM pivot position, OPT pivot position, and C_expected. GenerateOutputPA2.py creates the output2 file containing probe tip locations in CT coordinates.
+Filename: GenerateOutputPA3.py
+Instructions: change input and output file names as necessary for the correct dataset. Make sure you are in the PROGRAMS directory. GenerateOutputPA3.py creates the output3 file containing d_k positions, c_k positions, and the magnitude of distance between the two for different sample frames k.
 
 ## Files Summary
 FileIO.py: functions to read the calbody, calreadings, empivot, optpivot, ct-fiducials, em-fiducials, em-nav, output1, and output2 files.  
@@ -16,3 +16,5 @@ EMPivotCalibration.py: implementation of EM tracker pivot calibration, as well a
 OpticalPivotCalibration.py: implementation of optical tracker pivot calibration.
 DistortionCorrection.py: implementation of calculating and correcting Berstein polynomial distortion
 testing.py: script we used to debug our functions using the debug data sets and print error between the two.
+ClosestPointOnTriangle.py: functions to find the closest location of a triangle to a given point
+Mesh.py: class to store the surface mesh, and functions for KD-tree
