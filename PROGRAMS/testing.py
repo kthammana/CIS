@@ -308,5 +308,3 @@ def printPA3OutputErrorsOptimizedICP(dataset):
     print("d_k error: ", d_error/d_k.shape[0])
     print("c_k error: ", c_error/c_k.shape[0])
     print("mag error: ", mag_error/c_k.shape[0])
-
-testClosestPoint()
