@@ -7,7 +7,8 @@ from OpticalPivotCalibration import opticalCalibration
 from Point3d import Point3d
 from DistortionCorrection import bernstein, calcDistortionCorrection, correctDistortion
 from ClosestPointOnTriangle import findClosestPointOnTriangle
-from Mesh import Mesh
+from Mesh import Mesh, insert, search
+import time
 
 def testBernstein():
     # b_2,5(x) = 10x^2*(1 - x)^3 --> n = 5, k = 2, v = x
@@ -154,8 +155,10 @@ def printPA1OutputErrors(dataset):
 def calcDistance(x, y):
     return np.sqrt((x[0] - y[0])**2 + (x[1] - y[1])**2 + (x[2] - y[2])**2)
     
-def printPA3OutputErrors(dataset):
-    print("PA3 Output Errors:")
+def printPA3OutputErrorsLinearICP(dataset):
+    print("PA3 Output Errors w Linear Search:")
+
+    start_time = time.time()
     
     # test I/O functions
     A, A_tip, N_A = read_probbody("PA345 Student Data/Problem3-BodyA.txt")
@@ -169,19 +172,15 @@ def printPA3OutputErrors(dataset):
     mag_error = 0
 
     d_k = np.empty((a.shape[0], 3))
-    # print(d_k.shape)
     A_tip = A_tip.transpose()[..., np.newaxis]
-    # print(A_tip.shape)
     for i in range(a.shape[0]): # N_samples:
         F_Ai = registrationArunMethod(A, a[i], "A")
         F_Bi = registrationArunMethod(B, b[i], "B")
         F_BA = F_Bi.inverse() * F_Ai
         d_k[i] = (F_BA.R @ A_tip)[:,0] + F_BA.p.coords
         d_error += calcDistance(d_exp[i], d_k[i])
-    # print(d_k)
 
     # for PA3, F_reg = 1
-    # TO-DO: construct octree/kdtree for searching for points
     # linear search to find the closest points to d_k
     c_k = np.empty((a.shape[0], 3))
     for i in range(d_k.shape[0]):
@@ -198,11 +197,61 @@ def printPA3OutputErrors(dataset):
         c_k[i] = closest_point
         c_error += calcDistance(c_exp[i], c_k[i])
         mag_error += (np.abs(mag[i]-shortest_dist))
-    #print(c_k)
 
+    print("Time of execution: %s seconds" % (time.time() - start_time))
+    print("d_k error: ", d_error/d_k.shape[0])
+    print("c_k error: ", c_error/c_k.shape[0])
+    print("mag error: ", mag_error/c_k.shape[0])
+
+def printPA3OutputErrorsOptimizedICP(dataset):
+    print("PA3 Output Errors w KdTree Search:")
+
+    start_time = time.time()
+    
+    # test I/O functions
+    A, A_tip, N_A = read_probbody("PA345 Student Data/Problem3-BodyA.txt")
+    B, B_tip, N_B = read_probbody("PA345 Student Data/Problem3-BodyB.txt")
+    V, ind, n = read_mesh("PA345 Student Data/Problem3MeshFile.sur")
+    mesh = Mesh(V, ind, n)
+    a, b = read_samplereadings(dataset+"-SampleReadingsTest.txt", N_A, N_B)
+    d_exp, c_exp, mag = read_output3(dataset+"-Output.txt")
+    d_error = 0
+    c_error = 0
+    mag_error = 0
+
+    d_k = np.empty((a.shape[0], 3))
+    A_tip = A_tip.transpose()[..., np.newaxis]
+    for i in range(a.shape[0]): # N_samples:
+        F_Ai = registrationArunMethod(A, a[i], "A")
+        F_Bi = registrationArunMethod(B, b[i], "B")
+        F_BA = F_Bi.inverse() * F_Ai
+        d_k[i] = (F_BA.R @ A_tip)[:,0] + F_BA.p.coords
+        d_error += calcDistance(d_exp[i], d_k[i])
+
+    # for PA3, F_reg = 1
+    # kdtree search to find the closest points to d_k
+    root = None
+    
+    # Run time should now be O(n) instead of O(n^2)
+    for i in range(ind.shape[0]):
+        verts = mesh.getVerticesOfTriangle(i)
+        root = insert(root, mesh.calcCentroid(verts), verts, 0, i)
+    
+    c_k = np.empty((a.shape[0], 3))
+    for i in range(d_k.shape[0]):
+        nearest_node = search(root, d_k[i])
+        c_k[i] = findClosestPointOnTriangle(d_k[i], nearest_node.triangle)
+        shortest_dist = calcDistance(d_k[i], c_k[i])
+        # print(nearest_node.idx)
+        c_error += calcDistance(c_exp[i], c_k[i])
+        mag_error += (np.abs(mag[i]-shortest_dist))
+    
+    # Slight difference in these values
+    print("Time of execution: %s seconds" % (time.time() - start_time))
     print("d_k error: ", d_error/d_k.shape[0])
     print("c_k error: ", c_error/c_k.shape[0])
     print("mag error: ", mag_error/c_k.shape[0])
 
 
-printPA3OutputErrors("PA345 Student Data/PA3-F-Debug")
+printPA3OutputErrorsLinearICP("PA345 Student Data/PA3-F-Debug")
+printPA3OutputErrorsOptimizedICP("PA345 Student Data/PA3-F-Debug")
