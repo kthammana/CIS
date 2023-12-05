@@ -308,3 +308,56 @@ def printPA3OutputErrorsOptimizedICP(dataset):
     print("d_k error: ", d_error/d_k.shape[0])
     print("c_k error: ", c_error/c_k.shape[0])
     print("mag error: ", mag_error/c_k.shape[0])
+
+def printPA4OutputErrors(dataset):
+    # dataset = "PA345 Student Data/PA4-A-Debug"
+    print("PA4 Output Errors w KdTree Search:")
+    
+    # test I/O functions
+    A, A_tip, N_A = read_probbody("PA345 Student Data/Problem4-BodyA.txt")
+    B, B_tip, N_B = read_probbody("PA345 Student Data/Problem4-BodyB.txt")
+    V, ind, n = read_mesh("PA345 Student Data/Problem4MeshFile.sur")
+    mesh = Mesh(V, ind, n)
+    a, b = read_samplereadings(dataset+"-SampleReadingsTest.txt", N_A, N_B)
+    s_exp, c_exp, mag = read_output3(dataset+"-Output.txt") # same file format as PA3
+    s_error = 0
+    c_error = 0
+    mag_error = 0
+    
+    d_k = np.empty((a.shape[0], 3))
+    A_tip = A_tip.transpose()[..., np.newaxis]
+    for i in range(a.shape[0]): # N_samples:
+        F_Ai = registrationArunMethod(A, a[i], "A")
+        F_Bi = registrationArunMethod(B, b[i], "B")
+        F_BA = F_Bi.inverse() * F_Ai
+        d_k[i] = (F_BA.R @ A_tip)[:,0] + F_BA.p.coords
+        # d_error += calcDistance(d_exp[i], d_k[i])
+    
+    # for PA4, iteratively find F_reg
+    s_k = np.empty((a.shape[0], 3))
+    s_k[0] = d_k[0] # Assume F_reg = I for initial guess
+    
+    # kdtree search to find the closest points c_k to s_k
+    root = None
+    for i in range(ind.shape[0]): # build tree
+        verts = mesh.getVerticesOfTriangle(i)
+        root = insert(root, mesh.calcCentroid(verts), verts, 0, i)
+    
+    c_k = np.zeros((a.shape[0], 3))
+    for i in range(d_k.shape[0]): # search tree
+        nearest_node = search(root, s_k[i])
+        c_k[i] = findClosestPointOnTriangle(s_k[i], nearest_node.triangle)
+        ## I'm definitely creating F_reg wrong
+        F_reg = registrationArunMethod(d_k, c_k, "reg")
+        if i < (d_k.shape[0] - 1):
+            s_k[i+1] = F_reg.R.dot(d_k[i+1]) + F_reg.p.coords
+        shortest_dist = calcDistance(s_k[i], c_k[i])
+        # print(nearest_node.idx)
+        c_error += calcDistance(c_exp[i], c_k[i])
+        s_error += calcDistance(s_exp[i], s_k[i])
+        mag_error += (np.abs(mag[i]-shortest_dist))
+    
+    # Slight difference in these values
+    print("s_k error: ", s_error/s_k.shape[0])
+    print("c_k error: ", c_error/c_k.shape[0])
+    print("mag error: ", mag_error/c_k.shape[0])
