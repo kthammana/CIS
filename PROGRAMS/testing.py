@@ -396,12 +396,12 @@ def printPA4OutputErrors2(dataset):
     # for PA4, iteratively find F_reg
     s_k = np.empty((a.shape[0], 3))
     c_k = np.zeros((a.shape[0], 3))
-    # s_k = d_k # Assume F_reg = I for initial guess
 
     converged = False
     F_reg = Frame("reg", np.identity(3), Point3d("reg", 0, 0, 0)) # Assume F_reg = I for initial guess
     iterations = 0
-    while not converged and iterations < 50: # for now, max num of iterations is 50
+    d_max = 0.3
+    while not converged and iterations < 100: # for now, max num of iterations is 100
         for i in range(d_k.shape[0]): # search tree
             s_k[i] = F_reg.R.dot(d_k[i]) + F_reg.p.coords
             nearest_node = search(root, s_k[i])
@@ -409,13 +409,12 @@ def printPA4OutputErrors2(dataset):
             
         F_reg = registrationArunMethod(d_k, c_k, "reg")
 
-        avg_dist = 0
+        shortest_dist = np.empty(d_k.shape[0])
         for i in range(d_k.shape[0]):
             s_k[i] = F_reg.R.dot(d_k[i]) + F_reg.p.coords
-            shortest_dist = calcDistance(s_k[i], d_k[i])
-            avg_dist += shortest_dist
+            shortest_dist[i] = calcDistance(s_k[i], d_k[i])
 
-        if avg_dist/d_k.shape[0] < 1:
+        if np.mean(shortest_dist) < d_max:
             converged = True 
             # print(nearest_node.idx)
 
@@ -424,13 +423,13 @@ def printPA4OutputErrors2(dataset):
     for i in range(d_k.shape[0]):
         c_error += calcDistance(c_exp[i], c_k[i])
         s_error += calcDistance(s_exp[i], s_k[i])
-        mag_error += (np.abs(mag[i]-shortest_dist))
+        mag_error += (np.abs(mag[i]-shortest_dist[i]))
     
     # Slight difference in these values
     print("s_k error: ", s_error/s_k.shape[0])
     print("c_k error: ", c_error/c_k.shape[0])
-    print("mag error: ", mag_error/c_k.shape[0])
+    print("mag error: ", mag_error/mag.shape[0])
     print("Iterations: ", iterations)
     # print(s_k)
 
-printPA4OutputErrors2("PA345 Student Data/PA4-F-Debug")
+printPA4OutputErrors2("PA345 Student Data/PA4-D-Debug")
