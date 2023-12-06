@@ -15,6 +15,7 @@ from Point3d import Point3d
 from DistortionCorrection import bernstein, calcDistortionCorrection, correctDistortion
 from ClosestPointOnTriangle import findClosestPointOnTriangle
 from Mesh import Mesh, insert, search
+from Frame import Frame
 
 def calcDistance(x, y):
     return np.sqrt((x[0] - y[0])**2 + (x[1] - y[1])**2 + (x[2] - y[2])**2)
@@ -59,9 +60,9 @@ for i in range(ind.shape[0]): # build tree
     root = insert(root, mesh.calcCentroid(verts), verts, 0, i)
 
 converged = False
-F_reg = Frame("reg", np.identity(3), Point3d("reg", 0, 0, 1)) # Assume F_reg = I for initial guess
+F_reg = Frame("reg", np.identity(3), Point3d("reg", 0, 0, 0)) # Assume F_reg = I for initial guess
 d_max = 0.5
-while (!converged):
+while not converged:
     s_k = F_reg.R.dot(d_k) + F_reg.p.coords
     c_k = np.zeros((a.shape[0], 3))
     w = np.zeros(d_k.shape[0])
