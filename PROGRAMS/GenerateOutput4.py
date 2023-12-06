@@ -11,14 +11,15 @@ from Point3d import Point3d
 from ClosestPointOnTriangle import findClosestPointOnTriangle
 from Mesh import Mesh, insert, search
 from testing import calcDistance
+from Frame import Frame
 
 import os
 cwd = os.getcwd()
 print(cwd)
 
 # change input and output filenames
-dataset = "PA345 Student Data/PA3-A-Debug"
-output_filename = "PA3-A-Debug-Output.txt"
+dataset = "PA345 Student Data/PA4-K-Unknown"
+output_filename = "PA4-K-Unknown-Output.txt"
 
 f = open("../OUTPUT/"+output_filename, "w")
 
@@ -66,7 +67,7 @@ while not converged and iterations < 100: # max num of iterations is 100
         s_k[i] = F_reg.R.dot(d_k[i]) + F_reg.p.coords
         mag[i] = calcDistance(s_k[i], c_k[i])
 
-    if np.mean(shortest_dist) < d_max:
+    if np.mean(mag) < d_max:
         converged = True 
 
     iterations += 1
@@ -79,3 +80,4 @@ for i in range(d_k.shape[0]):
     string += "     {:.3f}".format(round(mag[i], 3))
     f.write(string + "\n")
     
+print('Wrote', output_filename)

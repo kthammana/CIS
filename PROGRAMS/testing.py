@@ -366,6 +366,7 @@ def printPA4OutputErrors(dataset):
 def printPA4OutputErrors2(dataset):
     # dataset = "PA345 Student Data/PA4-A-Debug"
     print("PA4 Output Errors w KdTree Search:")
+    print(dataset)
     
     # test I/O functions
     A, A_tip, N_A = read_probbody("PA345 Student Data/Problem4-BodyA.txt")
@@ -432,4 +433,4 @@ def printPA4OutputErrors2(dataset):
     print("Iterations: ", iterations)
     # print(s_k)
 
-printPA4OutputErrors2("PA345 Student Data/PA4-C-Debug")
+# printPA4OutputErrors2("PA345 Student Data/PA4-F-Debug")
