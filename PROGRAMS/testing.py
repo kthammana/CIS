@@ -335,7 +335,7 @@ def printPA4OutputErrors(dataset):
     
     # for PA4, iteratively find F_reg
     s_k = np.empty((a.shape[0], 3))
-    s_k[0] = d_k[0] # Assume F_reg = I for initial guess
+    s_k = d_k # Assume F_reg = I for initial guess
     
     # kdtree search to find the closest points c_k to s_k
     root = None
@@ -347,16 +347,16 @@ def printPA4OutputErrors(dataset):
     for i in range(d_k.shape[0]): # search tree
         nearest_node = search(root, s_k[i])
         c_k[i] = findClosestPointOnTriangle(s_k[i], nearest_node.triangle)
-        ## I'm definitely creating F_reg wrong
-        F_reg = registrationArunMethod(d_k, c_k, "reg")
-        if i < (d_k.shape[0] - 1):
-            s_k[i+1] = F_reg.R.dot(d_k[i+1]) + F_reg.p.coords
+        # if i < (d_k.shape[0] - 1):
+        #     s_k[i+1] = F_reg.R.dot(d_k[i+1]) + F_reg.p.coords
         shortest_dist = calcDistance(s_k[i], c_k[i])
         # print(nearest_node.idx)
         c_error += calcDistance(c_exp[i], c_k[i])
         s_error += calcDistance(s_exp[i], s_k[i])
         mag_error += (np.abs(mag[i]-shortest_dist))
     
+    ## I'm definitely creating F_reg wrong
+    F_reg = registrationArunMethod(d_k, c_k, "reg")
     # Slight difference in these values
     print("s_k error: ", s_error/s_k.shape[0])
     print("c_k error: ", c_error/c_k.shape[0])
