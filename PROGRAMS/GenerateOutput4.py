@@ -18,8 +18,8 @@ cwd = os.getcwd()
 print(cwd)
 
 # change input and output filenames
-dataset = "PA345 Student Data/PA4-K-Unknown"
-output_filename = "PA4-K-Unknown-Output.txt"
+dataset = "PA345 Student Data/PA4-J-Unknown"
+output_filename = "PA4-J-Unknown-Output.txt"
 
 f = open("../OUTPUT/"+output_filename, "w")
 
