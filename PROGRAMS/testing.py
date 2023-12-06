@@ -401,7 +401,7 @@ def printPA4OutputErrors2(dataset):
     converged = False
     F_reg = Frame("reg", np.identity(3), Point3d("reg", 0, 0, 0)) # Assume F_reg = I for initial guess
     iterations = 0
-    while not converged and iterations < 50:
+    while not converged and iterations < 50: # for now, max num of iterations is 50
         for i in range(d_k.shape[0]): # search tree
             s_k[i] = F_reg.R.dot(d_k[i]) + F_reg.p.coords
             nearest_node = search(root, s_k[i])
