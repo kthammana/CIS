@@ -412,7 +412,7 @@ def printPA4OutputErrors2(dataset):
         shortest_dist = np.empty(d_k.shape[0])
         for i in range(d_k.shape[0]):
             s_k[i] = F_reg.R.dot(d_k[i]) + F_reg.p.coords
-            shortest_dist[i] = calcDistance(s_k[i], d_k[i])
+            shortest_dist[i] = calcDistance(s_k[i], c_k[i])
 
         if np.mean(shortest_dist) < d_max:
             converged = True 
@@ -432,4 +432,4 @@ def printPA4OutputErrors2(dataset):
     print("Iterations: ", iterations)
     # print(s_k)
 
-printPA4OutputErrors2("PA345 Student Data/PA4-D-Debug")
+printPA4OutputErrors2("PA345 Student Data/PA4-C-Debug")
