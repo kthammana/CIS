@@ -4,7 +4,7 @@ Keerthana Thammana, lthamma1
 
 ## Executable
 Filename: GenerateOutputPA4.py
-Instructions: change input and output file names as necessary for the correct dataset. Make sure you are in the PROGRAMS directory. GenerateOutputPA4.py creates the output4 file containing s_k positions, c_k positions, and the magnitude of distance between the two for different sample frames k using ICP.
+Instructions: Run the above file and input on the command line as prompted. Prompts include specific formats to follow. Make sure you are in the PROGRAMS directory. GenerateOutputPA4.py creates the output4 file containing s_k positions, c_k positions, and the magnitude of distance between the two for different sample frames k using ICP.
 
 ## Files Summary
 FileIO.py: functions to read the calbody, calreadings, empivot, optpivot, ct-fiducials, em-fiducials, em-nav, output1, and output2 files.  
