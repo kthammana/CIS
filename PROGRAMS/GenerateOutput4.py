@@ -45,6 +45,7 @@ for i in range(ind.shape[0]):
     verts = mesh.getVerticesOfTriangle(i)
     root = insert(root, mesh.calcCentroid(verts), verts, 0, i)
 
+# run ICP
 d_max = 0.15
 max_iterations = 100
 F_reg_initial = Frame("reg", np.identity(3), Point3d("reg", 0, 0, 0))
