@@ -14,11 +14,19 @@ from ICP import ICP
 
 import os
 cwd = os.getcwd()
-print(cwd)
 
-# change input and output filenames
-dataset = "PA345 Student Data/PA4-A-Debug"
-output_filename = "PA4-A-Debug-Output.txt"
+# Prompt the user for the dataset path
+print('Current directory: ', cwd)
+print('Please input in the following format: PA345 Student Data/PA4-X-XXX')
+print('Where X is the dataset letter and XXX is Debug or Unknown')
+dataset = input("Dataset: ")
+
+# Prompt the user for the desired output file name
+print('Please input in the following format: PA4-X-XXX-Output.txt')
+output_filename = input("Desired output file name: ")
+# dataset = "PA345 Student Data/PA4-A-Debug"
+# output_filename = "PA4-A-Debug-Output.txt"
+print('Running code...')
 
 f = open("../OUTPUT/"+output_filename, "w")
 
