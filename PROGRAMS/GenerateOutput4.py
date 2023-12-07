@@ -8,10 +8,9 @@ import numpy as np
 from FileIO import read_probbody, read_mesh, read_samplereadings
 from Registration import registrationArunMethod
 from Point3d import Point3d
-from ClosestPointOnTriangle import findClosestPointOnTriangle
-from Mesh import Mesh, insert, search
-from testing import calcDistance
+from Mesh import Mesh, insert
 from Frame import Frame
+from ICP import ICP
 
 import os
 cwd = os.getcwd()
@@ -19,7 +18,7 @@ print(cwd)
 
 # change input and output filenames
 dataset = "PA345 Student Data/PA4-A-Debug"
-output_filename = "PA4-A-Debug-Output.txt"
+output_filename = "PA4-A-Debug-Output2.txt"
 
 f = open("../OUTPUT/"+output_filename, "w")
 
@@ -45,33 +44,11 @@ root = None
 for i in range(ind.shape[0]):
     verts = mesh.getVerticesOfTriangle(i)
     root = insert(root, mesh.calcCentroid(verts), verts, 0, i)
-    
-# Find c_k and calculate s_k
-s_k = np.empty((a.shape[0], 3))
-c_k = np.zeros((a.shape[0], 3))
-converged = False
-F_reg = Frame("reg", np.identity(3), Point3d("reg", 0, 0, 0)) # Assume F_reg = I for initial guess
-iterations = 0
+
 d_max = 0.15
-while not converged and iterations < 100: # max num of iterations is 100
-    for i in range(d_k.shape[0]): # search tree to find closest point
-        s_k[i] = F_reg.R.dot(d_k[i]) + F_reg.p.coords
-        nearest_node = search(root, s_k[i])
-        c_k[i] = findClosestPointOnTriangle(s_k[i], nearest_node.triangle)
-        
-    F_reg = registrationArunMethod(d_k, c_k, "reg")
-
-    # Update s_k and calculate || s_k - c_k ||
-    mag = np.empty(d_k.shape[0])
-    for i in range(s_k.shape[0]):
-        s_k[i] = F_reg.R.dot(d_k[i]) + F_reg.p.coords
-        mag[i] = calcDistance(s_k[i], c_k[i])
-
-    # check convergence
-    if np.mean(mag) < d_max:
-        converged = True 
-
-    iterations += 1
+max_iterations = 100
+F_reg_initial = Frame("reg", np.identity(3), Point3d("reg", 0, 0, 0))
+s_k, c_k, mag, _ = ICP(d_k, root, d_max, max_iterations, F_reg_initial)
 
 # Write s_k, c_k, and || s_k - c_k || to file
 for i in range(d_k.shape[0]):

@@ -3,8 +3,8 @@ Kiana Bronder, kbronde1
 Keerthana Thammana, lthamma1
 
 ## Executable
-Filename: GenerateOutputPA3.py
-Instructions: change input and output file names as necessary for the correct dataset. Make sure you are in the PROGRAMS directory. GenerateOutputPA3.py creates the output3 file containing d_k positions, c_k positions, and the magnitude of distance between the two for different sample frames k.
+Filename: GenerateOutputPA4.py
+Instructions: change input and output file names as necessary for the correct dataset. Make sure you are in the PROGRAMS directory. GenerateOutputPA4.py creates the output4 file containing s_k positions, c_k positions, and the magnitude of distance between the two for different sample frames k using ICP.
 
 ## Files Summary
 FileIO.py: functions to read the calbody, calreadings, empivot, optpivot, ct-fiducials, em-fiducials, em-nav, output1, and output2 files.  
@@ -18,3 +18,4 @@ DistortionCorrection.py: implementation of calculating and correcting Berstein p
 testing.py: script we used to debug our functions using the debug data sets and print error between the two.
 ClosestPointOnTriangle.py: functions to find the closest location of a triangle to a given point
 Mesh.py: class to store the surface mesh, and functions for KD-tree
+ICP.py: function to run iterative closest point registration
