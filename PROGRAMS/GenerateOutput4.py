@@ -18,7 +18,7 @@ print(cwd)
 
 # change input and output filenames
 dataset = "PA345 Student Data/PA4-A-Debug"
-output_filename = "PA4-A-Debug-Output2.txt"
+output_filename = "PA4-A-Debug-Output.txt"
 
 f = open("../OUTPUT/"+output_filename, "w")
 
