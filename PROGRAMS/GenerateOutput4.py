@@ -5,7 +5,7 @@ Kiana Bronder, kbronde1
 Keerthana Thammana, lthamma1
 """
 import numpy as np
-from FileIO import read_probbody, read_mesh, read_samplereadings, read_output3
+from FileIO import read_probbody, read_mesh, read_samplereadings
 from Registration import registrationArunMethod
 from Point3d import Point3d
 from ClosestPointOnTriangle import findClosestPointOnTriangle
@@ -18,8 +18,8 @@ cwd = os.getcwd()
 print(cwd)
 
 # change input and output filenames
-dataset = "PA345 Student Data/PA4-J-Unknown"
-output_filename = "PA4-J-Unknown-Output.txt"
+dataset = "PA345 Student Data/PA4-A-Debug"
+output_filename = "PA4-A-Debug-Output.txt"
 
 f = open("../OUTPUT/"+output_filename, "w")
 
@@ -52,9 +52,9 @@ c_k = np.zeros((a.shape[0], 3))
 converged = False
 F_reg = Frame("reg", np.identity(3), Point3d("reg", 0, 0, 0)) # Assume F_reg = I for initial guess
 iterations = 0
-d_max = 0.3
+d_max = 0.15
 while not converged and iterations < 100: # max num of iterations is 100
-    for i in range(d_k.shape[0]): # search tree
+    for i in range(d_k.shape[0]): # search tree to find closest point
         s_k[i] = F_reg.R.dot(d_k[i]) + F_reg.p.coords
         nearest_node = search(root, s_k[i])
         c_k[i] = findClosestPointOnTriangle(s_k[i], nearest_node.triangle)
@@ -67,6 +67,7 @@ while not converged and iterations < 100: # max num of iterations is 100
         s_k[i] = F_reg.R.dot(d_k[i]) + F_reg.p.coords
         mag[i] = calcDistance(s_k[i], c_k[i])
 
+    # check convergence
     if np.mean(mag) < d_max:
         converged = True 
 
