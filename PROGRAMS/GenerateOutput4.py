@@ -20,10 +20,12 @@ print('Current directory: ', cwd)
 print('Please input in the following format: PA345 Student Data/PA4-X-XXX')
 print('Where X is the dataset letter and XXX is Debug or Unknown')
 dataset = input("Dataset: ")
+print(dataset)
 
 # Prompt the user for the desired output file name
 print('Please input in the following format: PA4-X-XXX-Output.txt')
 output_filename = input("Desired output file name: ")
+print(output_filename)
 # dataset = "PA345 Student Data/PA4-A-Debug"
 # output_filename = "PA4-A-Debug-Output.txt"
 print('Running code...')
@@ -66,5 +68,7 @@ for i in range(d_k.shape[0]):
     string = point_s.__str__() + "     " + point_c.__str__()
     string += "     {:.3f}".format(round(mag[i], 3))
     f.write(string + "\n")
+
+f.close()
     
 print('Wrote', output_filename)
