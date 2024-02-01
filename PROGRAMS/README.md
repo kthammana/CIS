@@ -1,4 +1,4 @@
-# CIS PA#3
+# CIS
 Kiana Bronder, kbronde1
 Keerthana Thammana, lthamma1
 
