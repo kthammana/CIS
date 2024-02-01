@@ -2,7 +2,7 @@
 Kiana Bronder, kbronde1
 Keerthana Thammana, lthamma1
 
-This course focuses on computer-based techniques, systems, and applications exploiting quantitative information from medical images and sensors to assist clinicians in all phases of treatment from diagnosis to preoperative planning, execution, and follow-up. In this GitHub, we implement algorithms for frame transformations, registration, pivot calibration, distortion correction, iterative closest point, and surface mesh functions.
+This course focuses on computer-based techniques, systems, and applications exploiting quantitative information from medical images and sensors to assist clinicians in all phases of treatment from diagnosis to preoperative planning, execution, and follow-up. In this GitHub, we implement algorithms for frame transformations, registration, pivot calibration, distortion correction, iterative closest point, and surface mesh functions. These algorithms can be found in the PROGRAMS folder.
 
 ## Files Summary
 FileIO.py: functions to read the calbody, calreadings, empivot, optpivot, ct-fiducials, em-fiducials, em-nav, output1, and output2 files.  
